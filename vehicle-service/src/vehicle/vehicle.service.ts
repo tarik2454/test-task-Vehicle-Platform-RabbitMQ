@@ -10,9 +10,18 @@ export class VehicleService implements OnModuleInit {
     make?: string;
     model?: string;
     year?: number;
-    user_id: number;
+    userId: number;
   }) {
-    const [v] = await db.insert(vehicles).values(dto).returning();
+    const [v] = await db
+      .insert(vehicles)
+      .values({
+        make: dto.make ?? 'Unknown',
+        model: dto.model ?? 'Unknown',
+        year: dto.year ?? null,
+        userId: dto.userId,
+      })
+      .returning();
+
     return v;
   }
 
@@ -21,7 +30,9 @@ export class VehicleService implements OnModuleInit {
   }
 
   findOne(id: number) {
-    return db.query.vehicles.findFirst({ where: eq(vehicles.id, id) });
+    return db.query.vehicles.findFirst({
+      where: eq(vehicles.id, id),
+    });
   }
 
   async update(
@@ -30,17 +41,26 @@ export class VehicleService implements OnModuleInit {
   ) {
     const [v] = await db
       .update(vehicles)
-      .set({ ...dto, placeholder: false })
+      .set({
+        make: dto.make ?? 'Unknown',
+        model: dto.model ?? 'Unknown',
+        year: dto.year ?? null,
+      })
       .where(eq(vehicles.id, id))
       .returning();
+
     return v;
   }
 
-  delete(id: number) {
-    return db.delete(vehicles).where(eq(vehicles.id, id));
+  async delete(id: number) {
+    const [v] = await db
+      .delete(vehicles)
+      .where(eq(vehicles.id, id))
+      .returning();
+
+    return v;
   }
 
-  // Consumer запускается при старте модуля
   async onModuleInit() {
     const conn = await amqp.connect(process.env.RABBIT_URL!);
     const ch = await conn.createChannel();
@@ -59,8 +79,7 @@ export class VehicleService implements OnModuleInit {
           make: 'Unknown',
           model: 'Unknown',
           year: null,
-          user_id: event.data.id,
-          placeholder: true,
+          userId: event.data.id,
         });
       }
       ch.ack(msg);

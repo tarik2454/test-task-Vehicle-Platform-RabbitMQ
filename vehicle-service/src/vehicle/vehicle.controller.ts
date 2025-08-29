@@ -20,7 +20,7 @@ export class VehicleController {
       make?: string;
       model?: string;
       year?: number;
-      user_id: number;
+      userId: number;
     },
   ) {
     return this.service.create(dto);

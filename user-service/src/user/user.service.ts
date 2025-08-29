@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { db } from '../db';
 import { users } from '../db/schema';
+import { eq } from 'drizzle-orm';
 import { publishUserCreated } from '../rabbit/rabbit';
 
 @Injectable()
@@ -8,7 +9,10 @@ export class UserService {
   async create(dto: { email: string; name?: string }) {
     const [user] = await db
       .insert(users)
-      .values({ email: dto.email, name: dto.name })
+      .values({
+        email: dto.email,
+        name: dto.name ?? '', // Drizzle не принимает undefined
+      })
       .returning();
 
     await publishUserCreated({
@@ -25,21 +29,26 @@ export class UserService {
 
   async findOne(id: number) {
     return db.query.users.findFirst({
-      where: (u, { eq }) => eq(u.id, id),
+      where: eq(users.id, id),
     });
   }
 
   async update(id: number, dto: Partial<{ email: string; name: string }>) {
     const [user] = await db
       .update(users)
-      .set(dto)
-      .where(users.id.eq(id))
+      .set({
+        email: dto.email ?? '',
+        name: dto.name ?? '',
+      })
+      .where(eq(users.id, id))
       .returning();
+
     return user;
   }
 
   async delete(id: number) {
-    const [user] = await db.delete(users).where(users.id.eq(id)).returning();
+    const [user] = await db.delete(users).where(eq(users.id, id)).returning();
+
     return user;
   }
 }
