@@ -1,3 +1,4 @@
+// db/schema/vehicles.ts
 import {
   pgTable,
   serial,
@@ -13,4 +14,5 @@ export const vehicles = pgTable('vehicles', {
   year: integer('year'),
   userId: integer('user_id').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

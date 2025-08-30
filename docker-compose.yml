@@ -1,87 +1,83 @@
 version: "3.9"
 
 services:
-  # -------------------------
-  # PostgreSQL - одна база для всех сервисов
-  # -------------------------
   postgres:
     image: postgres:15-alpine
     container_name: postgres
     environment:
-      POSTGRES_USER: postgres # пользователь БД
-      POSTGRES_PASSWORD: postgres # пароль БД
-      POSTGRES_DB: vehicle_platform # название базы
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vehicle_platform
     ports:
-      - "5432:5432" # проброс порта на хост
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck: # проверка готовности БД
+    healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # -------------------------
-  # RabbitMQ - брокер сообщений для взаимодействия микросервисов
-  # -------------------------
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672" # основной порт RabbitMQ
-      - "15672:15672" # панель управления RabbitMQ
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-    healthcheck: # проверка готовности RabbitMQ
+    healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # -------------------------
-  # User Service - NestJS микросервис для работы с пользователями
-  # -------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - user-service
+      - vehicle-service
+
   user-service:
-    build: ./user-service # путь к Dockerfile сервиса
+    build: ./user-service
     container_name: user-service
     environment:
-      PORT: 4001 # порт сервиса
-      DB_HOST: postgres # подключение к Postgres
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASS: postgres
-      DB_NAME: vehicle_platform
-      RABBIT_URL: amqp://guest:guest@rabbitmq:5672 # подключение к RabbitMQ
-      RABBIT_EXCHANGE: user.events # exchange для событий
-    depends_on: # ждать готовности зависимостей
-      postgres:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    ports:
-      - "4001:4001"
-    healthcheck: # проверка доступности API
-      test: ["CMD", "curl", "-f", "http://localhost:4001/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # -------------------------
-  # Vehicle Service - NestJS микросервис для работы с транспортными средствами
-  # -------------------------
-  vehicle-service:
-    build: ./vehicle-service
-    container_name: vehicle-service
-    environment:
-      PORT: 4002
+      PORT: 4001
+      USER_SERVICE_PORT: 4001
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASS: postgres
       DB_NAME: vehicle_platform
       RABBIT_URL: amqp://guest:guest@rabbitmq:5672
-      RABBIT_EXCHANGE: user.events # слушает события от User Service
+      RABBIT_EXCHANGE: user.events
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "4001:4001"
+
+  vehicle-service:
+    build: ./vehicle-service
+    container_name: vehicle-service
+    environment:
+      PORT: 4002
+      VEHICLE_SERVICE_PORT: 4002
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: vehicle_platform
+      RABBIT_URL: amqp://guest:guest@rabbitmq:5672
+      RABBIT_EXCHANGE: user.events
       RABBIT_QUEUE: vehicle.user.created
     depends_on:
       postgres:
@@ -90,30 +86,6 @@ services:
         condition: service_healthy
     ports:
       - "4002:4002"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4002/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  # -------------------------
-  # Frontend - Next.js/Vite
-  # -------------------------
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    environment:
-      VITE_USER_API_URL: http://localhost:4001 # URL User Service
-      VITE_VEHICLE_API_URL: http://localhost:4002 # URL Vehicle Service
-    depends_on:
-      - user-service
-      - vehicle-service
-    ports:
-      - "5173:5173"
-
-# -------------------------
-# Том для хранения данных Postgres
-# -------------------------
 volumes:
   postgres_data:
-# docker-compose up - запуск докера

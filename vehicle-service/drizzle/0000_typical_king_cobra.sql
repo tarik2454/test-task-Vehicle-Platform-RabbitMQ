@@ -4,5 +4,6 @@ CREATE TABLE "vehicles" (
 	"model" varchar(255) DEFAULT 'Unknown' NOT NULL,
 	"year" integer,
 	"user_id" integer NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );

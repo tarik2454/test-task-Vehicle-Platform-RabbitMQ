@@ -1,88 +1,78 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { db } from '../db';
 import { vehicles } from '../db/schema';
-import { eq } from 'drizzle-orm';
-import amqp from 'amqplib';
+import { eq, InferSelectModel, InferInsertModel } from 'drizzle-orm';
+import { CreateVehicleDto, UpdateVehicleDto, Vehicle } from './dto';
+
+type DbVehicle = InferSelectModel<typeof vehicles>; // для выборки
+type NewVehicle = InferInsertModel<typeof vehicles>; // для вставки
 
 @Injectable()
-export class VehicleService implements OnModuleInit {
-  async create(dto: {
-    make?: string;
-    model?: string;
-    year?: number;
-    userId: number;
-  }) {
-    const [v] = await db
+export class VehicleService {
+  async create(dto: CreateVehicleDto): Promise<Vehicle> {
+    const insertValues: NewVehicle = {
+      make: dto.make ?? 'Unknown',
+      model: dto.model ?? 'Unknown',
+      year: dto.year,
+      userId: dto.userId,
+    };
+
+    if (!insertValues.userId) throw new Error('userId is required');
+
+    const [vehicle] = await db
       .insert(vehicles)
-      .values({
-        make: dto.make ?? 'Unknown',
-        model: dto.model ?? 'Unknown',
-        year: dto.year ?? null,
-        userId: dto.userId,
-      })
+      .values(insertValues)
       .returning();
-
-    return v;
+    return this.mapDbVehicle(vehicle);
   }
 
-  findAll() {
-    return db.select().from(vehicles);
+  async findAll(): Promise<Vehicle[]> {
+    const result = await db.select().from(vehicles);
+    return result.map((v) => this.mapDbVehicle(v));
   }
 
-  findOne(id: number) {
-    return db.query.vehicles.findFirst({
+  async findOne(id: number): Promise<Vehicle | null> {
+    const vehicle = await db.query.vehicles.findFirst({
       where: eq(vehicles.id, id),
     });
+    return vehicle ? this.mapDbVehicle(vehicle) : null;
   }
 
-  async update(
-    id: number,
-    dto: Partial<{ make: string; model: string; year: number }>,
-  ) {
-    const [v] = await db
+  async update(id: number, dto: UpdateVehicleDto): Promise<Vehicle> {
+    const updatedVehicles = await db
       .update(vehicles)
       .set({
-        make: dto.make ?? 'Unknown',
-        model: dto.model ?? 'Unknown',
-        year: dto.year ?? null,
+        make: dto.make ?? undefined,
+        model: dto.model ?? undefined,
+        year: dto.year ?? undefined,
+        updatedAt: new Date(),
       })
       .where(eq(vehicles.id, id))
       .returning();
 
-    return v;
+    if (!updatedVehicles.length)
+      throw new NotFoundException('Vehicle not found');
+    return this.mapDbVehicle(updatedVehicles[0]);
   }
 
-  async delete(id: number) {
-    const [v] = await db
+  async delete(id: number): Promise<Vehicle> {
+    const deletedVehicles = await db
       .delete(vehicles)
       .where(eq(vehicles.id, id))
       .returning();
 
-    return v;
+    if (!deletedVehicles.length)
+      throw new NotFoundException('Vehicle not found');
+    return this.mapDbVehicle(deletedVehicles[0]);
   }
 
-  async onModuleInit() {
-    const conn = await amqp.connect(process.env.RABBIT_URL!);
-    const ch = await conn.createChannel();
-    const exchange = process.env.RABBIT_EXCHANGE || 'user.events';
-    const queue = process.env.RABBIT_QUEUE || 'vehicle.user.created';
-
-    await ch.assertExchange(exchange, 'topic', { durable: true });
-    await ch.assertQueue(queue, { durable: true });
-    await ch.bindQueue(queue, exchange, 'user.created');
-
-    ch.consume(queue, async (msg) => {
-      if (!msg) return;
-      const event = JSON.parse(msg.content.toString());
-      if (event.type === 'USER_CREATED') {
-        await db.insert(vehicles).values({
-          make: 'Unknown',
-          model: 'Unknown',
-          year: null,
-          userId: event.data.id,
-        });
-      }
-      ch.ack(msg);
-    });
-  }
+  private mapDbVehicle = (vehicle: DbVehicle): Vehicle => ({
+    id: vehicle.id,
+    make: vehicle.make,
+    model: vehicle.model,
+    year: vehicle.year ?? undefined,
+    userId: vehicle.userId,
+    createdAt: vehicle.createdAt,
+    updatedAt: vehicle.updatedAt ?? vehicle.createdAt,
+  });
 }
