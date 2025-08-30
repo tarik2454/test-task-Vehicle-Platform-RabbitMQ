@@ -33,23 +33,13 @@ services:
       timeout: 5s
       retries: 5
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: frontend
-    ports:
-      - "5173:5173"
-    depends_on:
-      - user-service
-      - vehicle-service
-
   user-service:
     build: ./user-service
     container_name: user-service
     environment:
       PORT: 4001
       USER_SERVICE_PORT: 4001
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/vehicle_platform
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USER: postgres

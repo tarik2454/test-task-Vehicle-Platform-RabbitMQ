@@ -34,7 +34,7 @@ COPY src ./src
 RUN npm run build
 
 # Открываем порт
-EXPOSE 4001
+EXPOSE 4002
 
 # Запуск продакшн сервиса
 CMD ["node", "dist/main.js"]

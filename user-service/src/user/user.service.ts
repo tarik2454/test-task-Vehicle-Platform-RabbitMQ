@@ -4,6 +4,7 @@ import { db } from '../db';
 import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { CreateUserDto, User } from './dto';
+import { publishUserCreated } from 'src/rabbit/rabbit';
 
 @Injectable()
 export class UserService {
@@ -11,22 +12,16 @@ export class UserService {
 
   // Создание пользователя и отправка события
   async create(dto: CreateUserDto): Promise<User> {
-    // Drizzle ORM ожидает строго типизированные значения
-    const insertValues: {
-      email: string;
-      name: string;
-    } = {
-      email: dto.email,
-      name: dto.name ?? '', // если нет имени, используем пустую строку
-    };
+    const [user] = await db
+      .insert(users)
+      .values({
+        email: dto.email,
+        name: dto.name ?? '',
+      })
+      .returning();
 
-    const [user] = await db.insert(users).values(insertValues).returning();
-
-    // Отправка события через RabbitMQ
-    this.client.emit<{ id: number; email: string }>('user.created', {
-      id: user.id,
-      email: user.email,
-    });
+    // Публикуем событие через publisher
+    await publishUserCreated({ id: user.id, email: user.email });
 
     return {
       id: user.id,

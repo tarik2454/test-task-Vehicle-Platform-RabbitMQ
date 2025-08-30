@@ -1,15 +1,26 @@
+// src/rabbitmq/publisher.ts
 import amqp from 'amqplib';
 
-const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://localhost:5672';
-const RABBITMQ_EXCHANGE = process.env.RABBITMQ_EXCHANGE || 'user.events';
+const RABBIT_URL = process.env.RABBIT_URL || 'amqp://rabbitmq:5672';
+const EXCHANGE_NAME = process.env.RABBITMQ_EXCHANGE || 'user.events';
+const QUEUE_NAME = 'user.events';
+const ROUTING_KEY = 'user.created';
 
 let channel: amqp.Channel;
 
 async function getChannel() {
   if (!channel) {
-    const conn = await amqp.connect(RABBITMQ_URL);
+    const conn = await amqp.connect(RABBIT_URL);
     channel = await conn.createChannel();
-    await channel.assertExchange(RABBITMQ_EXCHANGE, 'topic', { durable: true });
+
+    // Создаём exchange
+    await channel.assertExchange(EXCHANGE_NAME, 'topic', { durable: true });
+
+    // Создаём очередь
+    await channel.assertQueue(QUEUE_NAME, { durable: true });
+
+    // Привязываем очередь к exchange с routing key
+    await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
   }
   return channel;
 }
@@ -20,14 +31,9 @@ export async function publishUserCreated(eventData: {
 }) {
   const ch = await getChannel();
   ch.publish(
-    RABBITMQ_EXCHANGE,
-    'user.created',
-    Buffer.from(
-      JSON.stringify({
-        type: 'USER_CREATED',
-        data: eventData,
-      }),
-    ),
+    EXCHANGE_NAME,
+    ROUTING_KEY,
+    Buffer.from(JSON.stringify({ type: 'USER_CREATED', data: eventData })),
     { persistent: true, contentType: 'application/json' },
   );
 

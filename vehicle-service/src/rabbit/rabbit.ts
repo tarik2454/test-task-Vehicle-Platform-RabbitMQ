@@ -10,8 +10,8 @@ interface UserCreatedEvent {
 
 @Injectable()
 export class RabbitConsumer implements OnModuleInit {
-  private readonly RABBITMQ_URL =
-    process.env.RABBITMQ_URL || 'amqp://localhost:5672';
+  private readonly RABBIT_URL =
+    process.env.RABBIT_URL || 'amqp://localhost:5672';
   private readonly RABBITMQ_EXCHANGE =
     process.env.RABBITMQ_EXCHANGE || 'user.events';
 
@@ -19,7 +19,7 @@ export class RabbitConsumer implements OnModuleInit {
   private channel!: Channel;
 
   async onModuleInit() {
-    this.conn = (await connect(this.RABBITMQ_URL)) as Connection;
+    this.conn = (await connect(this.RABBIT_URL)) as Connection;
     this.channel = await this.conn.createChannel();
 
     await this.channel.assertExchange(this.RABBITMQ_EXCHANGE, 'topic', {
