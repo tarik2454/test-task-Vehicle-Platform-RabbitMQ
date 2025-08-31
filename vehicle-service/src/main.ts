@@ -17,7 +17,7 @@ async function bootstrap() {
   await app.startAllMicroservices();
   await app.listen(process.env.VEHICLE_SERVICE_PORT || 5000);
   console.log(
-    `User Service running on port ${process.env.VEHICLE_SERVICE_PORT || 5000}`,
+    `- Vehicle Service running on port ${process.env.VEHICLE_SERVICE_PORT || 5000}`,
   );
 }
 bootstrap();

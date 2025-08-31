@@ -1,4 +1,3 @@
-// src/rabbitmq/publisher.ts
 import amqp from 'amqplib';
 
 const RABBIT_URL = process.env.RABBIT_URL || 'amqp://rabbitmq:5672';

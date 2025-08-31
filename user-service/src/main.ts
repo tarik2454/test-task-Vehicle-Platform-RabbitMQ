@@ -11,7 +11,7 @@ async function bootstrap() {
     options: {
       urls: [process.env.RABBIT_URL || 'amqp://guest:guest@rabbitmq:5672'],
       queue: process.env.RABBIT_EXCHANGE || 'user.events',
-      queueOptions: { durable: false },
+      queueOptions: { durable: true },
     },
   });
 
@@ -20,6 +20,6 @@ async function bootstrap() {
   // Определяем порт для HTTP-сервера
   const port = process.env.USER_SERVICE_PORT || 4000;
   await app.listen(port, '0.0.0.0');
-  console.log(`User Service running on port ${port}`);
+  console.log(`- User Service running on port ${port}`);
 }
 bootstrap();
