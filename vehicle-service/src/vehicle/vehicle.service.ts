@@ -1,15 +1,29 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { db } from '../db';
 import { vehicles } from '../db/schema';
 import { eq, InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import { CreateVehicleDto, UpdateVehicleDto, Vehicle } from './dto';
 
-type DbVehicle = InferSelectModel<typeof vehicles>; // для выборки
-type NewVehicle = InferInsertModel<typeof vehicles>; // для вставки
+type DbVehicle = InferSelectModel<typeof vehicles>;
+type NewVehicle = InferInsertModel<typeof vehicles>;
 
 @Injectable()
 export class VehicleService {
   async create(dto: CreateVehicleDto): Promise<Vehicle> {
+    if (!dto.userId) throw new BadRequestException('userId is required');
+
+    // Проверка дубликатов "Unknown" авто для одного пользователя
+    const existing = await db.query.vehicles.findFirst({
+      where: eq(vehicles.userId, dto.userId),
+    });
+    if (existing && (!dto.make || !dto.model)) {
+      throw new BadRequestException('User already has a default vehicle');
+    }
+
     const insertValues: NewVehicle = {
       make: dto.make ?? 'Unknown',
       model: dto.model ?? 'Unknown',
@@ -17,12 +31,11 @@ export class VehicleService {
       userId: dto.userId,
     };
 
-    if (!insertValues.userId) throw new Error('userId is required');
-
     const [vehicle] = await db
       .insert(vehicles)
       .values(insertValues)
       .returning();
+
     return this.mapDbVehicle(vehicle);
   }
 
@@ -52,6 +65,7 @@ export class VehicleService {
 
     if (!updatedVehicles.length)
       throw new NotFoundException('Vehicle not found');
+
     return this.mapDbVehicle(updatedVehicles[0]);
   }
 
@@ -63,16 +77,19 @@ export class VehicleService {
 
     if (!deletedVehicles.length)
       throw new NotFoundException('Vehicle not found');
+
     return this.mapDbVehicle(deletedVehicles[0]);
   }
 
-  private mapDbVehicle = (vehicle: DbVehicle): Vehicle => ({
-    id: vehicle.id,
-    make: vehicle.make,
-    model: vehicle.model,
-    year: vehicle.year ?? undefined,
-    userId: vehicle.userId,
-    createdAt: vehicle.createdAt,
-    updatedAt: vehicle.updatedAt ?? vehicle.createdAt,
-  });
+  private mapDbVehicle(vehicle: DbVehicle): Vehicle {
+    return {
+      id: vehicle.id,
+      make: vehicle.make,
+      model: vehicle.model,
+      year: vehicle.year ?? undefined,
+      userId: vehicle.userId,
+      createdAt: vehicle.createdAt,
+      updatedAt: vehicle.updatedAt ?? vehicle.createdAt,
+    };
+  }
 }

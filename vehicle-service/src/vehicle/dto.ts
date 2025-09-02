@@ -1,23 +1,23 @@
 // dto.ts
-export interface CreateVehicleDto {
+export class CreateVehicleDto {
   make?: string;
   model?: string;
   year?: number;
-  userId: number;
+  userId!: number; // "!" чтобы указать, что обязательно
 }
 
-export interface UpdateVehicleDto {
+export class UpdateVehicleDto {
   make?: string;
   model?: string;
   year?: number;
 }
 
-export interface Vehicle {
-  id: number;
-  make: string;
-  model: string;
+export class Vehicle {
+  id!: number;
+  make!: string;
+  model!: string;
   year?: number;
-  userId: number;
-  createdAt: Date;
+  userId!: number;
+  createdAt!: Date;
   updatedAt?: Date;
 }

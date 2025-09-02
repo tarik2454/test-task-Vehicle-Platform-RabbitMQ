@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { ConfigModule } from '@nestjs/config';
-import { RabbitConsumer } from './rabbit/rabbit';
+import { RabbitConsumerService } from './rabbit/consumer';
 
 @Module({
   imports: [
@@ -11,6 +11,6 @@ import { RabbitConsumer } from './rabbit/rabbit';
     }),
     VehicleModule,
   ],
-  providers: [RabbitConsumer],
+  providers: [RabbitConsumerService],
 })
 export class AppModule {}

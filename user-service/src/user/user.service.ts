@@ -4,7 +4,7 @@ import { db } from '../db';
 import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { CreateUserDto, User } from './dto';
-import { publishUserCreated } from 'src/rabbit/rabbit';
+import { publishUserCreated } from 'src/rabbit/producer';
 
 @Injectable()
 export class UserService {
