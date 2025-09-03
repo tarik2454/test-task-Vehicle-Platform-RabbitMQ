@@ -1,15 +1,38 @@
-const base = import.meta.env.VITE_USER_API_URL || "http://localhost:4001";
+import { userApi } from ".";
+import type { User } from "../types";
 
-export async function listUsers() {
-  const res = await fetch(`${base}/users`);
-  return res.json();
+// Получить всех пользователей
+export async function fetchUsers(): Promise<User[]> {
+  const res = await userApi.get("/users");
+  return res.data;
 }
 
-export async function createUser(payload: { email: string; name?: string }) {
-  const res = await fetch(`${base}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  return res.json();
+// Получить одного пользователя
+export async function fetchUser(id: number): Promise<User> {
+  const res = await userApi.get(`/users/${id}`);
+  return res.data;
+}
+
+// Создать пользователя
+export async function createUser(payload: {
+  email: string;
+  name?: string;
+}): Promise<User> {
+  const res = await userApi.post("/users", payload);
+  return res.data;
+}
+
+// Обновить пользователя
+export async function updateUser(
+  id: number,
+  payload: Partial<User>
+): Promise<User> {
+  const res = await userApi.put(`/users/${id}`, payload);
+  return res.data;
+}
+
+// Удалить пользователя
+export async function deleteUser(id: number): Promise<{ success: boolean }> {
+  const res = await userApi.delete(`/users/${id}`);
+  return res.data;
 }

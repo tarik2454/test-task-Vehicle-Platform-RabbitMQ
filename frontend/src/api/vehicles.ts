@@ -1,20 +1,40 @@
-const base = import.meta.env.VITE_VEHICLE_API_URL || "http://localhost:4002";
+import { vehicleApi } from ".";
+import type { Vehicle } from "../types";
 
-export async function listVehicles() {
-  const res = await fetch(`${base}/vehicles`);
-  return res.json();
+// Получить все машины
+export async function fetchVehicles(): Promise<Vehicle[]> {
+  const res = await vehicleApi.get("/vehicles");
+  return res.data;
 }
 
+// Получить одну машину
+export async function fetchVehicle(id: number): Promise<Vehicle> {
+  const res = await vehicleApi.get(`/vehicles/${id}`);
+  return res.data;
+}
+
+// Создать машину
 export async function createVehicle(payload: {
   make: string;
   model: string;
   year?: number;
-  user_id: number;
-}) {
-  const res = await fetch(`${base}/vehicles`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  return res.json();
+  userId: number;
+}): Promise<Vehicle> {
+  const res = await vehicleApi.post("/vehicles", payload);
+  return res.data;
+}
+
+// Обновить машину
+export async function updateVehicle(
+  id: number,
+  payload: Partial<Vehicle>
+): Promise<Vehicle> {
+  const res = await vehicleApi.put(`/vehicles/${id}`, payload);
+  return res.data;
+}
+
+// Удалить машину
+export async function deleteVehicle(id: number): Promise<{ success: boolean }> {
+  const res = await vehicleApi.delete(`/vehicles/${id}`);
+  return res.data;
 }
