@@ -39,8 +39,8 @@ RUN npm install
 
 COPY tsconfig.json ./
 COPY src ./src
-# COPY drizzle.config.ts ./
-# COPY drizzle ./drizzle
+COPY drizzle.config.ts ./
+COPY drizzle ./drizzle
 COPY entrypoint.sh ./
 RUN chmod +x entrypoint.sh
 

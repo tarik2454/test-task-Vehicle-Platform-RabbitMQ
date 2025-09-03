@@ -5,10 +5,7 @@ import { RabbitConsumerService } from './rabbit/consumer';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: ['../../.env'],
-    }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['../../.env'] }),
     VehicleModule,
   ],
   providers: [RabbitConsumerService],

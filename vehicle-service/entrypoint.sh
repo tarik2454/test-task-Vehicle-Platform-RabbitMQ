@@ -6,6 +6,8 @@ until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER; do
   sleep 1
 done
 
-echo "Skipping migrations in vehicle-service"
+# Применяем миграции Drizzle
+npx drizzle-kit migrate
 
+# Запускаем NestJS
 node dist/main.js
