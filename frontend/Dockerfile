@@ -1,15 +1,15 @@
-# Stage 1: build frontend
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-# Stage 2: serve with Vite preview
 FROM node:20-alpine
 WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
+
+# Устанавливаем зависимости
+COPY package*.json ./
+RUN npm install
+
+# Копируем весь код для разработки
+COPY . .
+
+# Открываем порт Vite
 EXPOSE 5173
-CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5173"]
+
+# Запуск Vite в режиме dev с live-reload
+CMD ["npm", "run", "dev"]

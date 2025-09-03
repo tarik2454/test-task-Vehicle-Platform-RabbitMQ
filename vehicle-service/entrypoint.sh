@@ -9,5 +9,5 @@ done
 # Применяем миграции Drizzle
 npx drizzle-kit migrate
 
-# Запускаем NestJS
-node dist/main.js
+# Запускаем NestJS в режиме watch
+npm run dev

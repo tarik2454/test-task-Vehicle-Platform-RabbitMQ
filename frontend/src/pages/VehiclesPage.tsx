@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Container,
   Typography,
   Button,
   Table,
@@ -36,7 +35,7 @@ export default function VehiclesPage() {
   }
 
   return (
-    <Container maxWidth="lg">
+    <>
       <Typography variant="h4" gutterBottom>
         Vehicles
       </Typography>
@@ -72,6 +71,6 @@ export default function VehiclesPage() {
         onClose={() => setOpen(false)}
         onCreated={loadData}
       />
-    </Container>
+    </>
   );
 }

@@ -15,7 +15,7 @@ COPY drizzle ./drizzle
 COPY entrypoint.sh ./
 RUN chmod +x entrypoint.sh
 
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 4002
 CMD ["./entrypoint.sh"]

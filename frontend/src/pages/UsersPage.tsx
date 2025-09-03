@@ -1,10 +1,10 @@
-import { Container, Typography, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import UsersTable from "../components/UsersTable";
 import UserForm from "../components/UserForm";
 
 export default function UsersPage() {
   return (
-    <Container maxWidth="lg">
+    <>
       <Typography variant="h4" gutterBottom>
         Пользователи
       </Typography>
@@ -12,6 +12,6 @@ export default function UsersPage() {
         <UserForm />
       </Box>
       <UsersTable />
-    </Container>
+    </>
   );
 }
