@@ -1,16 +1,32 @@
 services:
-  postgres:
+  postgres_users:
     image: postgres:15-alpine
-    container_name: postgres
+    container_name: postgres_users
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres # создаём только дефолтную базу
+      POSTGRES_DB: users_db
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_users_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres_vehicles:
+    image: postgres:15-alpine
+    container_name: postgres_vehicles
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: vehicles_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_vehicles_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -32,22 +48,27 @@ services:
       timeout: 5s
       retries: 5
 
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      user-service:
+        condition: service_started
+      vehicle-service:
+        condition: service_started
+
   user-service:
     build: ./user-service
     container_name: user-service
     environment:
-      PORT: 4001
       USER_SERVICE_PORT: 4001
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/users_db
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASS: postgres
-      DB_NAME: users_db
+      DATABASE_URL: postgresql://postgres:postgres@postgres_users:5432/users_db
       RABBIT_URL: amqp://guest:guest@rabbitmq:5672
       RABBIT_EXCHANGE: user.events
     depends_on:
-      postgres:
+      postgres_users:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -59,19 +80,13 @@ services:
     build: ./vehicle-service
     container_name: vehicle-service
     environment:
-      PORT: 4002
       VEHICLE_SERVICE_PORT: 4002
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/vehicles_db
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASS: postgres
-      DB_NAME: vehicles_db
+      DATABASE_URL: postgresql://postgres:postgres@postgres_vehicles:5432/vehicles_db
       RABBIT_URL: amqp://guest:guest@rabbitmq:5672
       RABBIT_EXCHANGE: user.events
       RABBIT_QUEUE: vehicle.user.created
     depends_on:
-      postgres:
+      postgres_vehicles:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
@@ -80,4 +95,5 @@ services:
     command: sh -c "npx drizzle-kit migrate && node dist/main.js"
 
 volumes:
-  postgres_data:
+  postgres_users_data:
+  postgres_vehicles_data:

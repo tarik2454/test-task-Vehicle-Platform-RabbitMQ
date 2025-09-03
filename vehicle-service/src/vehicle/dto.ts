@@ -1,9 +1,8 @@
-// dto.ts
 export class CreateVehicleDto {
   make?: string;
   model?: string;
   year?: number;
-  userId!: number; // "!" чтобы указать, что обязательно
+  userId!: number;
 }
 
 export class UpdateVehicleDto {
