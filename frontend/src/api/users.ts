@@ -2,13 +2,13 @@ import { userApi } from ".";
 import type { User } from "../types";
 
 // Получить всех пользователей
-export async function fetchUsers(): Promise<User[]> {
+export async function getUsers(): Promise<User[]> {
   const res = await userApi.get("/users");
   return res.data;
 }
 
 // Получить одного пользователя
-export async function fetchUser(id: number): Promise<User> {
+export async function getUserById(id: number): Promise<User> {
   const res = await userApi.get(`/users/${id}`);
   return res.data;
 }

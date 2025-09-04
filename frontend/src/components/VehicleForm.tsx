@@ -9,7 +9,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { createVehicle } from "../api/vehicles";
-import { fetchUsers } from "../api/users";
+import { getUsers } from "../api/users";
 import type { User } from "../types";
 
 interface Props {
@@ -26,11 +26,11 @@ export default function VehicleForm({ open, onClose, onCreated }: Props) {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    async function loadUsers() {
-      const data = await fetchUsers();
+    async function fetchUsers() {
+      const data = await getUsers();
       setUsers(data);
     }
-    loadUsers();
+    fetchUsers();
   }, []);
 
   async function handleSubmit() {

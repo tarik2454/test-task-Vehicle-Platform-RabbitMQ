@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { TextField, Button, Box } from "@mui/material";
 import { userApi } from "../api";
 
@@ -6,12 +6,14 @@ export default function UserForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
     await userApi.post("/users", { name, email });
+
     setName("");
     setEmail("");
-    window.location.reload(); // обновляем список
+    window.location.reload();
   };
 
   return (

@@ -9,8 +9,8 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { fetchVehicles } from "../api/vehicles";
-import { fetchUsers } from "../api/users";
+import { getVehicles } from "../api/vehicles";
+import { getUsers } from "../api/users";
 import VehicleForm from "../components/VehicleForm";
 import type { User, Vehicle } from "../types";
 
@@ -24,7 +24,7 @@ export default function VehiclesPage() {
   }, []);
 
   async function loadData() {
-    const [v, u] = await Promise.all([fetchVehicles(), fetchUsers()]);
+    const [v, u] = await Promise.all([getVehicles(), getUsers()]);
     setVehicles(v);
     setUsers(u);
   }

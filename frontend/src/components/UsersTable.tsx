@@ -18,13 +18,13 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Edit, Delete, Info } from "@mui/icons-material";
-import { fetchUsers, createUser, updateUser, deleteUser } from "../api/users";
-import { updateVehicle, createVehicle } from "../api/vehicles";
+import { getUsers, createUser, updateUser, deleteUser } from "../api/users";
+import { updateVehicle, createVehicle, getVehicles } from "../api/vehicles";
+
 import type { User, Vehicle } from "../types";
 
 export default function UsersTable() {
   const [users, setUsers] = useState<User[]>([]);
-  const [vehines, setVehines] = useState<Vehicle[]>([]);
   const [openUserDialog, setOpenUserDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [formUser, setFormUser] = useState<{ email: string; name?: string }>({
@@ -45,14 +45,15 @@ export default function UsersTable() {
     year: undefined,
   });
 
-  async function getUsers() {
-    const data = await fetchUsers();
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+
+  async function loadUsers() {
+    const data = await getUsers();
     setUsers(data);
-    console.log(data);
   }
 
   useEffect(() => {
-    getUsers();
+    loadUsers();
   }, []);
 
   /** === USER DIALOG === */
@@ -74,23 +75,36 @@ export default function UsersTable() {
       await createUser(formUser);
     }
     setOpenUserDialog(false);
-    getUsers();
+    loadUsers();
   }
 
   async function handleDeleteUser(id: number) {
     await deleteUser(id);
-    getUsers();
+    loadUsers();
   }
 
   /** === INFO DIALOG === */
-  function handleOpenInfo(user: User) {
+  async function loadVehiclesUserId(userId: number) {
+    const data = await getVehicles();
+
+    const result = data.filter((item) => item.userId === userId);
+
+    setVehicles(result);
+
+    console.log(vehicles);
+  }
+
+  function handleOpenInfo(user: User, userId: number) {
     setEditingUser(user);
     setOpenInfo(true);
+
+    loadVehiclesUserId(userId);
   }
 
   /** === VEHICLE DIALOG === */
   function handleOpenVehicle(user: User, vehicle?: Vehicle | null) {
     setEditingUser(user);
+
     if (vehicle) {
       setEditingVehicle(vehicle);
       setFormVehicle({
@@ -106,14 +120,14 @@ export default function UsersTable() {
   }
 
   async function handleSaveVehicle() {
-    if (!editingUser) return;
+    if (!editingUser || editingUser.id === undefined) return;
     if (editingVehicle) {
       await updateVehicle(editingVehicle.id!, formVehicle);
     } else {
-      await createVehicle({ ...formVehicle, user_id: editingUser.id });
+      await createVehicle({ ...formVehicle, userId: editingUser.id });
     }
     setOpenVehicle(false);
-    getUsers();
+    loadUsers();
   }
 
   return (
@@ -133,19 +147,24 @@ export default function UsersTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((u) => (
-            <TableRow key={u.id}>
-              <TableCell>{u.id}</TableCell>
-              <TableCell>{u.email}</TableCell>
-              <TableCell>{u.name}</TableCell>
+          {users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.id}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>{user.name}</TableCell>
               <TableCell>
-                <IconButton onClick={() => handleOpenUser(u)}>
+                <IconButton onClick={() => handleOpenUser(user)}>
                   <Edit />
                 </IconButton>
-                <IconButton onClick={() => handleDeleteUser(u.id!)}>
+                <IconButton onClick={() => handleDeleteUser(user.id!)}>
                   <Delete />
                 </IconButton>
-                <IconButton onClick={() => handleOpenInfo(u)}>
+                <IconButton
+                  onClick={() =>
+                    user.id !== undefined && handleOpenInfo(user, user.id)
+                  }
+                  disabled={user.id === undefined}
+                >
                   <Info />
                 </IconButton>
               </TableCell>
@@ -203,16 +222,18 @@ export default function UsersTable() {
               <Typography>Email: {editingUser.email}</Typography>
               <Typography sx={{ mt: 2 }}>Автомобили:</Typography>
               <List>
-                {editingUser.vehicles && editingUser.vehicles.length > 0 ? (
-                  editingUser.vehicles.map((v, idx) => (
+                {vehicles && vehicles.length > 0 ? (
+                  vehicles.map((vehicle, idx) => (
                     <ListItem key={idx}>
                       <ListItemText
-                        primary={`${v.make ?? "Unknown"} ${
-                          v.model ?? "Unknown"
+                        primary={`${vehicle.make ?? "Unknown"} ${
+                          vehicle.model ?? "Unknown"
                         }`}
-                        secondary={`Year: ${v.year ?? "null"}`}
+                        secondary={`Year: ${vehicle.year ?? "null"}`}
                       />
-                      <Button onClick={() => handleOpenVehicle(editingUser, v)}>
+                      <Button
+                        onClick={() => handleOpenVehicle(editingUser, vehicle)}
+                      >
                         Редактировать авто
                       </Button>
                     </ListItem>

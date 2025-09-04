@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import {
-  fetchVehicles,
+  getVehicles,
   createVehicle,
   updateVehicle,
   deleteVehicle,
@@ -24,7 +24,7 @@ import type { Vehicle } from "../types";
 
 export default function VehiclesTable() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
   const [form, setForm] = useState<Partial<Vehicle>>({
     make: "",
@@ -33,13 +33,13 @@ export default function VehiclesTable() {
     userId: 1,
   });
 
-  async function load() {
-    const data = await fetchVehicles();
+  async function fetchVehicles() {
+    const data = await getVehicles();
     setVehicles(data);
   }
 
   useEffect(() => {
-    load();
+    fetchVehicles();
   }, []);
 
   function handleOpen(vehicle?: Vehicle) {
@@ -50,7 +50,8 @@ export default function VehiclesTable() {
       setEditingVehicle(null);
       setForm({ make: "", model: "", year: 2020, userId: 1 });
     }
-    setOpen(true);
+
+    setIsOpen(true);
   }
 
   async function handleSave() {
@@ -59,13 +60,14 @@ export default function VehiclesTable() {
     } else {
       await createVehicle(form as Vehicle);
     }
-    setOpen(false);
-    load();
+
+    setIsOpen(false);
+    fetchVehicles();
   }
 
   async function handleDelete(id: number) {
     await deleteVehicle(id);
-    load();
+    fetchVehicles();
   }
 
   return (
@@ -86,18 +88,18 @@ export default function VehiclesTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {vehicles.map((v) => (
-            <TableRow key={v.id}>
-              <TableCell>{v.id}</TableCell>
-              <TableCell>{v.make}</TableCell>
-              <TableCell>{v.model}</TableCell>
-              <TableCell>{v.year}</TableCell>
-              <TableCell>{v.userId}</TableCell>
+          {vehicles.map((vehicle) => (
+            <TableRow key={vehicle.id}>
+              <TableCell>{vehicle.id}</TableCell>
+              <TableCell>{vehicle.make}</TableCell>
+              <TableCell>{vehicle.model}</TableCell>
+              <TableCell>{vehicle.year}</TableCell>
+              <TableCell>{vehicle.userId}</TableCell>
               <TableCell>
-                <IconButton onClick={() => handleOpen(v)}>
+                <IconButton onClick={() => handleOpen(vehicle)}>
                   <Edit />
                 </IconButton>
-                <IconButton onClick={() => handleDelete(v.id!)}>
+                <IconButton onClick={() => handleDelete(vehicle.id!)}>
                   <Delete />
                 </IconButton>
               </TableCell>
@@ -106,7 +108,7 @@ export default function VehiclesTable() {
         </TableBody>
       </Table>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
         <DialogTitle>
           {editingVehicle ? "Edit Vehicle" : "Add Vehicle"}
         </DialogTitle>
@@ -145,7 +147,7 @@ export default function VehiclesTable() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={() => setIsOpen(false)}>Cancel</Button>
           <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>

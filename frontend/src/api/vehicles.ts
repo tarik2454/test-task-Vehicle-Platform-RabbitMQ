@@ -2,13 +2,13 @@ import { vehicleApi } from ".";
 import type { Vehicle } from "../types";
 
 // Получить все машины
-export async function fetchVehicles(): Promise<Vehicle[]> {
+export async function getVehicles(): Promise<Vehicle[]> {
   const res = await vehicleApi.get("/vehicles");
   return res.data;
 }
 
 // Получить одну машину
-export async function fetchVehicle(id: number): Promise<Vehicle> {
+export async function getVehicleById(id: number): Promise<Vehicle> {
   const res = await vehicleApi.get(`/vehicles/${id}`);
   return res.data;
 }
