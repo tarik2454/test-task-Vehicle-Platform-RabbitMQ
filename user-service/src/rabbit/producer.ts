@@ -7,7 +7,7 @@ const EXCHANGE_NAME = process.env.RABBITMQ_EXCHANGE || 'user.events';
 //! Routing key для конкретного события
 const ROUTING_KEY = 'user.created';
 //! Название очереди
-const QUEUE_NAME = 'user.created.queue';
+// const QUEUE_NAME = 'user.created.queue';
 
 let channel: Channel;
 
@@ -22,15 +22,15 @@ async function getChannel(): Promise<Channel> {
     await channel.assertExchange(EXCHANGE_NAME, 'topic', { durable: true });
     console.log(`✅ Exchange "${EXCHANGE_NAME}" создан или уже существует`);
 
-    //! Создаём durable очередь
-    await channel.assertQueue(QUEUE_NAME, { durable: true });
-    console.log(`✅ Очередь "${QUEUE_NAME}" создана или уже существует`);
+    // //! Создаём durable очередь
+    // await channel.assertQueue(QUEUE_NAME, { durable: true });
+    // console.log(`✅ Очередь "${QUEUE_NAME}" создана или уже существует`);
 
-    //! Привязываем очередь к exchange с routing key
-    await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
-    console.log(
-      `✅ Очередь "${QUEUE_NAME}" привязана к exchange "${EXCHANGE_NAME}" с routingKey "${ROUTING_KEY}"`,
-    );
+    // //! Привязываем очередь к exchange с routing key
+    // await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
+    // console.log(
+    //   `✅ Очередь "${QUEUE_NAME}" привязана к exchange "${EXCHANGE_NAME}" с routingKey "${ROUTING_KEY}"`,
+    // );
   }
   return channel;
 }

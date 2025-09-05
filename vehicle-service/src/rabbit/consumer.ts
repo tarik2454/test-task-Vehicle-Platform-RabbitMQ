@@ -24,16 +24,30 @@ function isUserCreatedEvent(value: unknown): value is UserCreatedEvent {
 
 //! Конфигурация RabbitMQ
 const RABBIT_URL = process.env.RABBIT_URL || 'amqp://guest:guest@rabbitmq:5672';
-const QUEUE_NAME = process.env.RABBIT_QUEUE || 'vehicle.user.created'; //! очередь создаётся продюсером
+const EXCHANGE_NAME = process.env.RABBITMQ_EXCHANGE || 'user.events';
+const ROUTING_KEY = 'user.created';
+const QUEUE_NAME = process.env.RABBIT_QUEUE || 'vehicle.user.created';
 
 let channel: Channel | null = null;
 
-//! Получение канала (создаётся один раз и используется повторно)
+//! Получение канала (создаётся один раз)
 async function getChannel(): Promise<Channel> {
   if (!channel) {
     const conn = await amqp.connect(RABBIT_URL);
     channel = await conn.createChannel();
-    console.log(`✅ Подключено к RabbitMQ, очередь: "${QUEUE_NAME}"`);
+
+    console.log(`✅ Подключено к RabbitMQ`);
+
+    //! Создаём durable exchange (если его ещё нет)
+    await channel.assertExchange(EXCHANGE_NAME, 'topic', { durable: true });
+
+    //! Создаём очередь и привязываем её к exchange
+    await channel.assertQueue(QUEUE_NAME, { durable: true });
+    await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
+
+    console.log(
+      `✅ Очередь "${QUEUE_NAME}" готова и привязана к exchange "${EXCHANGE_NAME}" с routingKey "${ROUTING_KEY}"`,
+    );
   }
   return channel;
 }
@@ -44,7 +58,6 @@ export async function startConsumer() {
 
   console.log('✅ Сервис Vehicle слушает события user.created...');
 
-  //! Подписка на очередь с ручным подтверждением сообщений
   await ch.consume(
     QUEUE_NAME,
     (msg: ConsumeMessage | null) => {
@@ -58,7 +71,7 @@ export async function startConsumer() {
 
           if (!isUserCreatedEvent(parsed)) {
             console.warn('⚠️ Сообщение имеет неверный формат:', parsed);
-            ch.ack(msg); // подтверждаем, чтобы не застряло
+            ch.ack(msg);
             return;
           }
 
@@ -74,7 +87,6 @@ export async function startConsumer() {
             `🚗 Vehicle создан для user ${userId} (vehicle id: ${vehicle.id})`,
           );
 
-          //! Подтверждаем успешную обработку сообщения
           ch.ack(msg);
           console.log('✅ Сообщение подтверждено (ack)');
         } catch (err) {
@@ -88,13 +100,6 @@ export async function startConsumer() {
         }
       })();
     },
-    { noAck: false }, // включаем ручное подтверждение сообщений
+    { noAck: false },
   );
 }
-
-//! Пример запуска консьюмера
-// (можно вызвать из отдельного файла bootstrap.ts или main.ts)
-startConsumer().catch((err) => {
-  console.error('❌ Ошибка запуска RabbitMQ Consumer:', err);
-  process.exit(1);
-});
