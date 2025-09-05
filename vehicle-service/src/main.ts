@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +20,9 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.VEHICLE_SERVICE_PORT || 5000;
+  const configService = app.get(ConfigService);
+
+  const port = configService.get<number>('VEHICLE_SERVICE_PORT') || 5000;
   await app.listen(port, '0.0.0.0');
   console.log(`- Vehicle Service running on port ${port}`);
 }

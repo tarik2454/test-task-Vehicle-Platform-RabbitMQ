@@ -1,5 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
 import { db } from '../db';
 import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
@@ -8,9 +7,6 @@ import { publishUserCreated } from 'src/rabbit/producer';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
-
-  // Создание пользователя и отправка события
   async create(dto: CreateUserDto): Promise<User> {
     const [user] = await db
       .insert(users)
@@ -20,7 +16,7 @@ export class UserService {
       })
       .returning();
 
-    // Публикуем событие через publisher
+    //! публикуем событие через publisher
     await publishUserCreated({ id: user.id, email: user.email });
 
     return {
