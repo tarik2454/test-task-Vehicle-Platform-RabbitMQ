@@ -47,13 +47,13 @@ export default function UsersTable() {
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
-  async function loadUsers() {
+  async function fetchUsers() {
     const data = await getUsers();
     setUsers(data);
   }
 
   useEffect(() => {
-    loadUsers();
+    fetchUsers();
   }, []);
 
   /** === USER DIALOG === */
@@ -69,18 +69,19 @@ export default function UsersTable() {
   }
 
   async function handleSaveUser() {
+    console.log(formUser);
     if (editingUser) {
       await updateUser(editingUser.id!, formUser);
     } else {
       await createUser(formUser);
     }
     setOpenUserDialog(false);
-    loadUsers();
+    fetchUsers();
   }
 
   async function handleDeleteUser(id: number) {
     await deleteUser(id);
-    loadUsers();
+    fetchUsers();
   }
 
   /** === INFO DIALOG === */
@@ -127,7 +128,7 @@ export default function UsersTable() {
       await createVehicle({ ...formVehicle, userId: editingUser.id });
     }
     setOpenVehicle(false);
-    loadUsers();
+    fetchUsers();
   }
 
   return (

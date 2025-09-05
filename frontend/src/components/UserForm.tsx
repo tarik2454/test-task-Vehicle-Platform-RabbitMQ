@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { TextField, Button, Box } from "@mui/material";
-import { userApi } from "../api";
+import { createUser } from "../api/users";
 
 export default function UserForm() {
   const [name, setName] = useState("");
@@ -9,7 +9,7 @@ export default function UserForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    await userApi.post("/users", { name, email });
+    await createUser({ name, email });
 
     setName("");
     setEmail("");

@@ -15,7 +15,6 @@ import { CreateVehicleDto, UpdateVehicleDto } from './dto';
 export class VehicleController {
   constructor(private readonly service: VehicleService) {}
 
-  // HTTP endpoints
   @Post()
   create(@Body() dto: CreateVehicleDto) {
     return this.service.create(dto);
