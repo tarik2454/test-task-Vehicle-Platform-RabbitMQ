@@ -16,7 +16,6 @@ export class VehicleService {
   async create(dto: CreateVehicleDto): Promise<Vehicle> {
     if (!dto.userId) throw new BadRequestException('userId is required');
 
-    // Проверка дубликатов "Unknown" авто для одного пользователя
     const existing = await db.query.vehicles.findFirst({
       where: eq(vehicles.userId, dto.userId),
     });

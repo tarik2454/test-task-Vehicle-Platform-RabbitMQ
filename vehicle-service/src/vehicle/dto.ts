@@ -31,9 +31,9 @@ export class UpdateVehicleDto {
   @IsNumber({}, { message: 'Год должен быть числом' })
   year?: number;
 
-  @IsNotEmpty({ message: 'Поле userId обязательно' })
+  @IsOptional()
   @IsNumber({}, { message: 'userId должен быть числом' })
-  userId!: number;
+  userId?: number;
 }
 
 export class Vehicle {

@@ -40,7 +40,7 @@ export class VehicleController {
     return this.service.delete(+id);
   }
 
-  // RabbitMQ Event listener
+  //! RabbitMQ Event listener
   @EventPattern('vehicle.user.created')
   handleUserCreated(@Payload() data: any) {
     console.log('User created event received in vehicle service:', data);

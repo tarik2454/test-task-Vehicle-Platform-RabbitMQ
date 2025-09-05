@@ -16,7 +16,7 @@ export class UserService {
       })
       .returning();
 
-    //! публикуем событие через publisher
+    //! Публикуем событие через publisher
     await publishUserCreated({ id: user.id, email: user.email });
 
     return {
