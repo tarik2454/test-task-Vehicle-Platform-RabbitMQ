@@ -58,6 +58,7 @@ export class VehicleService {
         make: dto.make ?? undefined,
         model: dto.model ?? undefined,
         year: dto.year ?? undefined,
+        userId: dto.userId,
         updatedAt: new Date(),
       })
       .where(eq(vehicles.id, id))

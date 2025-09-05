@@ -69,7 +69,6 @@ export default function UsersTable() {
   }
 
   async function handleSaveUser() {
-    console.log(formUser);
     if (editingUser) {
       await updateUser(editingUser.id!, formUser);
     } else {
@@ -91,8 +90,6 @@ export default function UsersTable() {
     const result = data.filter((item) => item.userId === userId);
 
     setVehicles(result);
-
-    console.log(vehicles);
   }
 
   function handleOpenInfo(user: User, userId: number) {
