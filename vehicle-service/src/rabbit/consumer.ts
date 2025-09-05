@@ -1,5 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import amqp, { ConsumeMessage, Channel } from 'amqplib';
+import amqp, { Channel, ConsumeMessage } from 'amqplib';
 import { db } from '../db';
 import { vehicles } from '../db/schema';
 
@@ -23,51 +22,48 @@ function isUserCreatedEvent(value: unknown): value is UserCreatedEvent {
   return typeof data.id === 'number' && typeof data.email === 'string';
 }
 
-//! Конфигурация
+//! Конфигурация RabbitMQ
 const RABBIT_URL = process.env.RABBIT_URL || 'amqp://guest:guest@rabbitmq:5672';
-const QUEUE_NAME = process.env.RABBIT_QUEUE || 'vehicle.user.created'; //! очередь уже создаётся продюсером
+const QUEUE_NAME = process.env.RABBIT_QUEUE || 'vehicle.user.created'; //! очередь создаётся продюсером
 
-let channel: Channel;
+let channel: Channel | null = null;
 
-//! Консюмер подключается к существующей очереди и exchange (не создаёт их)
+//! Получение канала (создаётся один раз и используется повторно)
 async function getChannel(): Promise<Channel> {
   if (!channel) {
     const conn = await amqp.connect(RABBIT_URL);
     channel = await conn.createChannel();
-    //! Консюмер **не создаёт очередь и не делает bind**
+    console.log(`✅ Подключено к RabbitMQ, очередь: "${QUEUE_NAME}"`);
   }
   return channel;
 }
 
-@Injectable()
-export class RabbitConsumerService implements OnModuleInit {
-  async onModuleInit() {
-    //! Получаем канал для RabbitMQ
-    const ch = await getChannel();
+//! Функция запуска консьюмера
+export async function startConsumer() {
+  const ch = await getChannel();
 
-    console.log('✅ Сервис Vehicle слушает события user.created...');
+  console.log('✅ Сервис Vehicle слушает события user.created...');
 
-    //! Асинхронная подписка на очередь с ручным подтверждением (ack/nack)
-    await ch.consume(
-      QUEUE_NAME,
-      (msg: ConsumeMessage | null): void => {
-        if (!msg) return;
+  //! Подписка на очередь с ручным подтверждением сообщений
+  await ch.consume(
+    QUEUE_NAME,
+    (msg: ConsumeMessage | null) => {
+      if (!msg) return;
 
-        console.log(`📥 Получено сообщение: ${msg.content.toString()}`);
+      console.log(`📥 Получено сообщение: ${msg.content.toString()}`);
 
-        void (async () => {
-          //! Парсим JSON сообщение
+      void (async () => {
+        try {
           const parsed: unknown = JSON.parse(msg.content.toString());
 
-          //! Проверка корректности события
           if (!isUserCreatedEvent(parsed)) {
             console.warn('⚠️ Сообщение имеет неверный формат:', parsed);
-            //! Подтверждаем сообщение, чтобы оно не зависло
-            ch.ack(msg);
+            ch.ack(msg); // подтверждаем, чтобы не застряло
             return;
           }
 
           const userId = parsed.data.id;
+
           //! Создаём транспорт для пользователя в базе
           const [vehicle] = await db
             .insert(vehicles)
@@ -80,22 +76,25 @@ export class RabbitConsumerService implements OnModuleInit {
 
           //! Подтверждаем успешную обработку сообщения
           ch.ack(msg);
-          console.log(`✅ Сообщение подтверждено (ack)`);
-        })().catch((err) => {
-          //! Лог ошибки обработки сообщения
+          console.log('✅ Сообщение подтверждено (ack)');
+        } catch (err) {
           console.error('❌ Ошибка при обработке сообщения:', err);
           try {
-            //! Отклоняем сообщение при ошибке
             ch.nack(msg, false, false);
             console.error('❌ Сообщение отклонено (nack)');
           } catch (e) {
-            // !Лог, если nack не сработал
             console.error('❌ Не удалось выполнить nack:', e);
           }
-        });
-      },
-      //! Включаем ручное подтверждение сообщений
-      { noAck: false },
-    );
-  }
+        }
+      })();
+    },
+    { noAck: false }, // включаем ручное подтверждение сообщений
+  );
 }
+
+//! Пример запуска консьюмера
+// (можно вызвать из отдельного файла bootstrap.ts или main.ts)
+startConsumer().catch((err) => {
+  console.error('❌ Ошибка запуска RabbitMQ Consumer:', err);
+  process.exit(1);
+});
