@@ -40,8 +40,6 @@ async function getChannel(): Promise<Channel> {
     const conn = await amqp.connect(RABBIT_URL);
     channel = await conn.createChannel();
 
-    console.log(`✅ Подключено к RabbitMQ`);
-
     // Создаём durable exchange (если его ещё нет)
     await channel.assertExchange(EXCHANGE_NAME, 'topic', { durable: true });
 
