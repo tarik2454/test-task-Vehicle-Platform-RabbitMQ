@@ -20,14 +20,6 @@ async function getChannel(): Promise<Channel> {
 
     // Создаём durable exchange
     await channel.assertExchange(EXCHANGE_NAME, 'topic', { durable: true });
-
-    // Создаём очередь продьюсера и привязываем её к exchange
-    // await channel.assertQueue(QUEUE_NAME, { durable: true });
-    // await channel.bindQueue(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
-
-    // console.log(
-    //   `✅ Очередь "${QUEUE_NAME}" привязана к exchange "${EXCHANGE_NAME}" с routingKey "${ROUTING_KEY}"`,
-    // );
   }
   return channel;
 }
