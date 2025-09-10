@@ -11,7 +11,7 @@ const ROUTING_KEY = 'user.created';
 
 let channel: Channel;
 
-//! Получение и создание канала (создаётся один раз и повторно используется для всех публикаций)
+// Получение и создание канала (создаётся один раз и повторно используется для всех публикаций)
 async function getChannel(): Promise<Channel> {
   if (!channel) {
     // Подключение к RabbitMQ

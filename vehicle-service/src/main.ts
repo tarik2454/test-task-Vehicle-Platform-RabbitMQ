@@ -27,7 +27,7 @@ async function bootstrap() {
   await app.listen(port, '0.0.0.0');
   console.log(`- Vehicle Service running on port ${port}`);
 
-  //! Запуск консьюмера после поднятия HTTP сервера
+  // Запуск консьюмера после поднятия HTTP сервера
   startConsumer().catch((err) => {
     console.error('❌ Ошибка запуска RabbitMQ Consumer:', err);
     process.exit(1);
