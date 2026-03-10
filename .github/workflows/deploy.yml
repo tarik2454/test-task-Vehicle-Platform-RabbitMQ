@@ -37,17 +37,39 @@ jobs:
           ssh-keyscan -T 10 -p 22 -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts || echo "ssh-keyscan failed, will use accept-new"
           chmod 644 ~/.ssh/known_hosts
 
-      # 4️⃣ Проверка соединения с сервером
+      # 4️⃣ Ожидаем доступность SSH порта
+      - name: Wait for SSH port
+        run: |
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            if timeout 5 bash -c "cat < /dev/null > /dev/tcp/${{ secrets.EC2_HOST }}/22" 2>/dev/null; then
+              echo "SSH port 22 is reachable"
+              exit 0
+            fi
+            echo "SSH port is not reachable yet (attempt $attempt/12), waiting 10s..."
+            sleep 10
+          done
+          echo "SSH port 22 is still unreachable after multiple attempts"
+          exit 1
+
+      # 5️⃣ Проверка соединения с сервером (с retry)
       - name: Test SSH connection
         run: |
-          SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=30"
-          ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH OK'"
+          SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=60"
+          for attempt in 1 2 3 4 5; do
+            if ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH OK'"; then
+              exit 0
+            fi
+            echo "SSH test failed (attempt $attempt/5), waiting 15s..."
+            sleep 15
+          done
+          echo "SSH test failed after multiple attempts"
+          exit 1
 
-      # 5️⃣ Деплой на сервер
+      # 6️⃣ Деплой на сервер (с retry)
       - name: Deploy App
         run: |
-          SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=30"
-          ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=60"
+          cat > /tmp/remote_deploy.sh << 'EOF'
             set -e
             mkdir -p ~/project
             cd ~/project
@@ -82,3 +104,14 @@ jobs:
             # Отображаем итоговый статус контейнеров
             $COMPOSE_CMD ps
           EOF
+
+          chmod +x /tmp/remote_deploy.sh
+          for attempt in 1 2 3; do
+            if ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'bash -s' < /tmp/remote_deploy.sh; then
+              exit 0
+            fi
+            echo "Deploy over SSH failed (attempt $attempt/3), waiting 20s..."
+            sleep 20
+          done
+          echo "Deploy failed after multiple attempts"
+          exit 1
