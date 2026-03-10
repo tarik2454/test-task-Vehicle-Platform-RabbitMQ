@@ -115,6 +115,10 @@ jobs:
             on_error() {
               echo "Deploy failed. Current container state:"
               $COMPOSE_CMD ps || true
+              echo "Docker disk usage:"
+              sudo docker system df || true
+              echo "Filesystem usage:"
+              df -h || true
             }
             trap on_error ERR
 
@@ -122,10 +126,20 @@ jobs:
             # Но лучше делать up --remove-orphans, чтобы минимизировать downtime и нагрузку IO
             # $COMPOSE_CMD down || true
 
-            echo "Cleaning up old logs and images (non-aggressive)..."
+            echo "Cleaning up old logs and Docker cache..."
             sudo journalctl --vacuum-time=1d || true
-            # Очищаем только неиспользуемые данные, не трогаем кэш сборки
-            sudo docker image prune -f >/dev/null 2>&1 || true
+            sudo docker builder prune -af || true
+            sudo docker system prune -af || true
+
+            echo "Checking free disk space before build..."
+            AVAILABLE_KB=$(df -Pk / | awk 'NR==2 {print $4}')
+            # Require at least ~2.5GB free to avoid ENOSPC during npm ci in Docker builds
+            if [ "$AVAILABLE_KB" -lt "2621440" ]; then
+              echo "Not enough free disk space on EC2 for Docker build."
+              echo "Please increase EBS volume size (recommended 20GB+) and retry."
+              df -h
+              exit 1
+            fi
 
             echo "Building services sequentially with cache..."
             # Используем кэш! Это критически важно для экономии ресурсов t2.micro
