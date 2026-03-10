@@ -70,7 +70,7 @@ jobs:
         run: |
           SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=60"
           cat > /tmp/remote_deploy.sh << 'EOF'
-            set -e
+            set -euo pipefail
             mkdir -p ~/project
             cd ~/project
 
@@ -96,6 +96,14 @@ jobs:
               echo "Docker Compose is not installed on EC2"
               exit 1
             fi
+
+            on_error() {
+              echo "Deploy failed. Current container state:"
+              $COMPOSE_CMD ps || true
+              echo "Recent container logs:"
+              $COMPOSE_CMD logs --tail=100 || true
+            }
+            trap on_error ERR
 
             # Запускаем стек контейнеров
             $COMPOSE_CMD down || true
