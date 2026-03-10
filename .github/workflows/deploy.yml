@@ -72,14 +72,6 @@ jobs:
           cat > /tmp/remote_deploy.sh << 'EOF'
             set -euo pipefail
             
-            echo "Reconfiguring swap space to exactly 1GB to free up disk space..."
-            sudo swapoff -a || true
-            sudo rm -f /swapfile || true
-            sudo fallocate -l 1024M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
-            sudo chmod 600 /swapfile
-            sudo mkswap /swapfile
-            sudo swapon /swapfile
-
             mkdir -p ~/project
             cd ~/project
 
@@ -116,6 +108,19 @@ jobs:
 
             # Останавливаем старые контейнеры
             $COMPOSE_CMD down || true
+
+            echo "Ensuring swap space is exactly 1GB..."
+            SWAP_SIZE=$(sudo du -m /swapfile 2>/dev/null | cut -f1 || echo "0")
+            if [ "$SWAP_SIZE" -lt "1000" ] || [ "$SWAP_SIZE" -gt "1100" ]; then
+              sudo swapoff -a || true
+              sudo rm -f /swapfile || true
+              sudo fallocate -l 1024M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
+              sudo chmod 600 /swapfile
+              sudo mkswap /swapfile
+              sudo swapon /swapfile
+            else
+              echo "Swap is already ~1GB, skipping reconfiguration."
+            fi
 
             # Теперь очищаем мусор БЕЗ удаления баз данных!
             # ВАЖНО: Убрано --volumes, так как это удаляет данные PostgreSQL!
