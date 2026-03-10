@@ -201,8 +201,26 @@ jobs:
           echo "Starting infrastructure services (DBs & RabbitMQ)..."
           $COMPOSE_CMD up -d --no-build postgres_users postgres_vehicles rabbitmq
 
-          echo "Waiting for infrastructure to be ready..."
-          sleep 10
+          echo "Waiting for infrastructure health checks..."
+          for attempt in $(seq 1 24); do
+            USERS_HEALTH=$(sudo docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' postgres_users 2>/dev/null || echo "missing")
+            VEHICLES_HEALTH=$(sudo docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' postgres_vehicles 2>/dev/null || echo "missing")
+            RABBIT_HEALTH=$(sudo docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' rabbitmq 2>/dev/null || echo "missing")
+
+            echo "Health status: postgres_users=$USERS_HEALTH postgres_vehicles=$VEHICLES_HEALTH rabbitmq=$RABBIT_HEALTH"
+
+            if [ "$USERS_HEALTH" = "healthy" ] && [ "$VEHICLES_HEALTH" = "healthy" ] && [ "$RABBIT_HEALTH" = "healthy" ]; then
+              echo "Infrastructure is healthy."
+              break
+            fi
+
+            if [ "$attempt" -eq 24 ]; then
+              echo "Infrastructure did not become healthy in time."
+              exit 1
+            fi
+
+            sleep 5
+          done
 
           echo "Starting application services..."
           $COMPOSE_CMD up -d --no-build user-service vehicle-service frontend
