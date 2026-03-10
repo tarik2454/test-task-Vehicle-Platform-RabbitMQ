@@ -192,13 +192,13 @@ jobs:
           fi
 
           echo "Starting infrastructure services (DBs & RabbitMQ)..."
-          $COMPOSE_CMD up -d postgres_users postgres_vehicles rabbitmq
+          $COMPOSE_CMD up -d --no-build postgres_users postgres_vehicles rabbitmq
 
           echo "Waiting for infrastructure to be ready..."
           sleep 10
 
           echo "Starting application services..."
-          $COMPOSE_CMD up -d user-service vehicle-service frontend
+          $COMPOSE_CMD up -d --no-build user-service vehicle-service frontend
 
           # Final cleanup
           sudo docker image prune -f >/dev/null 2>&1 || true
