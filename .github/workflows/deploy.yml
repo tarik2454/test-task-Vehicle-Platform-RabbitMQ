@@ -15,12 +15,12 @@ env:
 
 concurrency:
   group: deploy-ec2-main
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 75
 
     steps:
       - name: Checkout code
@@ -107,6 +107,13 @@ jobs:
         run: |
           SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=15 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes -o ConnectTimeout=120"
           BUILD_IMAGES="${{ steps.build_mode.outputs.build_images }}"
+          if [ "$BUILD_IMAGES" = "true" ]; then
+            DEPLOY_TIMEOUT="50m"
+            DEPLOY_ATTEMPTS=1
+          else
+            DEPLOY_TIMEOUT="20m"
+            DEPLOY_ATTEMPTS=2
+          fi
           cat > /tmp/remote_deploy.sh << 'EOF'
           set -euo pipefail
 
@@ -208,13 +215,13 @@ jobs:
           EOF
 
           chmod +x /tmp/remote_deploy.sh
-          for attempt in 1 2; do
+          for attempt in $(seq 1 "$DEPLOY_ATTEMPTS"); do
             echo "Starting deploy attempt $attempt..."
-            if timeout 20m ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "BUILD_IMAGES=$BUILD_IMAGES bash -s" < /tmp/remote_deploy.sh; then
+            if timeout "$DEPLOY_TIMEOUT" ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "BUILD_IMAGES=$BUILD_IMAGES bash -s" < /tmp/remote_deploy.sh; then
               echo "Deployment successful!"
               exit 0
             fi
-            echo "Deploy failed (attempt $attempt/2), waiting 30s before retry..."
+            echo "Deploy failed (attempt $attempt/$DEPLOY_ATTEMPTS), waiting 30s before retry..."
             sleep 30
           done
           echo "Deploy failed after all attempts"
