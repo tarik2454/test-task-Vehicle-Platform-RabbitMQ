@@ -68,10 +68,24 @@ jobs:
       # 6️⃣ Деплой на сервер (с retry)
       - name: Deploy App
         run: |
-          SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=60"
+          SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=15 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes -o ConnectTimeout=120"
           cat > /tmp/remote_deploy.sh << 'EOF'
             set -euo pipefail
             
+            echo "Step 1: Resource management (Swap)..."
+            SWAP_SIZE=$(sudo du -m /swapfile 2>/dev/null | cut -f1 || echo "0")
+            if [ "$SWAP_SIZE" -lt "1000" ]; then
+              echo "Configuring 1GB swap space..."
+              sudo swapoff -a || true
+              sudo rm -f /swapfile || true
+              sudo fallocate -l 1024M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
+              sudo chmod 600 /swapfile
+              sudo mkswap /swapfile
+              sudo swapon /swapfile
+            else
+              echo "Swap is already active and sufficient ($SWAP_SIZE MB)."
+            fi
+
             mkdir -p ~/project
             cd ~/project
 
@@ -101,65 +115,49 @@ jobs:
             on_error() {
               echo "Deploy failed. Current container state:"
               $COMPOSE_CMD ps || true
-              echo "Recent container logs:"
-              $COMPOSE_CMD logs --tail=100 || true
             }
             trap on_error ERR
 
-            # Останавливаем старые контейнеры
-            $COMPOSE_CMD down || true
+            # Останавливаем предыдущую версию только если это критично для памяти
+            # Но лучше делать up --remove-orphans, чтобы минимизировать downtime и нагрузку IO
+            # $COMPOSE_CMD down || true
 
-            echo "Ensuring swap space is exactly 1GB..."
-            SWAP_SIZE=$(sudo du -m /swapfile 2>/dev/null | cut -f1 || echo "0")
-            if [ "$SWAP_SIZE" -lt "1000" ] || [ "$SWAP_SIZE" -gt "1100" ]; then
-              sudo swapoff -a || true
-              sudo rm -f /swapfile || true
-              sudo fallocate -l 1024M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
-              sudo chmod 600 /swapfile
-              sudo mkswap /swapfile
-              sudo swapon /swapfile
-            else
-              echo "Swap is already ~1GB, skipping reconfiguration."
-            fi
-
-            # Теперь очищаем мусор БЕЗ удаления баз данных!
-            # ВАЖНО: Убрано --volumes, так как это удаляет данные PostgreSQL!
-            echo "Cleaning up disk space (docker image prune -af & logs)..."
+            echo "Cleaning up old logs and images (non-aggressive)..."
             sudo journalctl --vacuum-time=1d || true
-            sudo docker image prune -af >/dev/null 2>&1 || true
-            sudo docker builder prune -af >/dev/null 2>&1 || true
-            df -h
-
-            # Собираем новые образы последовательно
-            # --no-cache гарантирует, что кэш сборки не будет забивать диск
-            echo "Building frontend..."
-            $COMPOSE_CMD build --no-cache frontend
+            # Очищаем только неиспользуемые данные, не трогаем кэш сборки
             sudo docker image prune -f >/dev/null 2>&1 || true
-            sudo docker builder prune -af >/dev/null 2>&1 || true
 
-            echo "Building user-service..."
-            $COMPOSE_CMD build --no-cache user-service
-            sudo docker image prune -f >/dev/null 2>&1 || true
-            sudo docker builder prune -af >/dev/null 2>&1 || true
+            echo "Building services sequentially with cache..."
+            # Используем кэш! Это критически важно для экономии ресурсов t2.micro
+            $COMPOSE_CMD build user-service
+            $COMPOSE_CMD build vehicle-service
+            $COMPOSE_CMD build frontend
 
-            echo "Building vehicle-service..."
-            $COMPOSE_CMD build --no-cache vehicle-service
-            sudo docker image prune -f >/dev/null 2>&1 || true
-            sudo docker builder prune -af >/dev/null 2>&1 || true
+            echo "Starting infrastructure services (DBs & RabbitMQ)..."
+            $COMPOSE_CMD up -d postgres_users postgres_vehicles rabbitmq
             
-            $COMPOSE_CMD up -d
+            echo "Waiting for infrastructure to be ready..."
+            sleep 10
 
-            # Отображаем итоговый статус контейнеров
+            echo "Starting application services..."
+            $COMPOSE_CMD up -d user-service vehicle-service frontend
+
+            # Финальная очистка
+            sudo docker image prune -f >/dev/null 2>&1 || true
+            
+            echo "Final status:"
             $COMPOSE_CMD ps
           EOF
 
           chmod +x /tmp/remote_deploy.sh
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
+            echo "Starting deploy attempt $attempt..."
             if ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'bash -s' < /tmp/remote_deploy.sh; then
+              echo "Deployment successful!"
               exit 0
             fi
-            echo "Deploy over SSH failed (attempt $attempt/3), waiting 20s..."
-            sleep 20
+            echo "Deploy failed (attempt $attempt/5), waiting 30s before retry..."
+            sleep 30
           done
-          echo "Deploy failed after multiple attempts"
+          echo "Deploy failed after all attempts"
           exit 1
