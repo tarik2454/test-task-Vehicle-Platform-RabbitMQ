@@ -6,7 +6,7 @@ WORKDIR /app
 RUN apk add --no-cache postgresql-client bash && rm -rf /var/cache/apk/*
 
 COPY package*.json ./
-RUN npm ci --legacy-peer-deps && npm cache clean --force
+RUN npm ci --legacy-peer-deps --no-audit --no-fund && npm cache clean --force
 
 COPY tsconfig.json ./
 COPY src ./src

@@ -124,23 +124,25 @@ jobs:
 
             # Теперь очищаем мусор БЕЗ удаления баз данных!
             # ВАЖНО: Убрано --volumes, так как это удаляет данные PostgreSQL!
-            # ВАЖНО: Убрано -a, чтобы не удалять скачанные node/postgres/rabbitmq.
-            echo "Cleaning up disk space (docker system prune & logs)..."
+            echo "Cleaning up disk space (docker image prune -af & logs)..."
             sudo journalctl --vacuum-time=1d || true
-            sudo docker system prune -f >/dev/null 2>&1 || true
+            sudo docker image prune -af >/dev/null 2>&1 || true
             sudo docker builder prune -af >/dev/null 2>&1 || true
             df -h
 
             # Собираем новые образы последовательно
-            # --no-cache гарантирует, что кэш сборки не будет забивать диск (на t2.micro с 8GB диска кэши от 3-х сервисов приводят к ENOSPC)
+            # --no-cache гарантирует, что кэш сборки не будет забивать диск
+            echo "Building frontend..."
             $COMPOSE_CMD build --no-cache frontend
             sudo docker image prune -f >/dev/null 2>&1 || true
             sudo docker builder prune -af >/dev/null 2>&1 || true
 
+            echo "Building user-service..."
             $COMPOSE_CMD build --no-cache user-service
             sudo docker image prune -f >/dev/null 2>&1 || true
             sudo docker builder prune -af >/dev/null 2>&1 || true
 
+            echo "Building vehicle-service..."
             $COMPOSE_CMD build --no-cache vehicle-service
             sudo docker image prune -f >/dev/null 2>&1 || true
             sudo docker builder prune -af >/dev/null 2>&1 || true
