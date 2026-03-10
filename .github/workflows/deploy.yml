@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      build_images:
+        description: "Force rebuild Docker images on EC2"
+        required: false
+        default: "false"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -69,6 +74,7 @@ jobs:
       - name: Deploy App
         run: |
           SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=15 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes -o ConnectTimeout=120"
+          BUILD_IMAGES="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_images || 'false' }}"
           cat > /tmp/remote_deploy.sh << 'EOF'
             set -euo pipefail
             
@@ -141,11 +147,15 @@ jobs:
               exit 1
             fi
 
-            echo "Building services sequentially with cache..."
-            # Используем кэш! Это критически важно для экономии ресурсов t2.micro
-            $COMPOSE_CMD build user-service
-            $COMPOSE_CMD build vehicle-service
-            $COMPOSE_CMD build frontend
+            if [ "${BUILD_IMAGES:-false}" = "true" ]; then
+              echo "BUILD_IMAGES=true: building services sequentially..."
+              # Sequential build reduces peak RAM/CPU usage on small EC2 instances.
+              $COMPOSE_CMD build user-service
+              $COMPOSE_CMD build vehicle-service
+              $COMPOSE_CMD build frontend
+            else
+              echo "BUILD_IMAGES=false: skipping image rebuild to keep EC2 responsive."
+            fi
 
             echo "Starting infrastructure services (DBs & RabbitMQ)..."
             $COMPOSE_CMD up -d postgres_users postgres_vehicles rabbitmq
@@ -164,13 +174,13 @@ jobs:
           EOF
 
           chmod +x /tmp/remote_deploy.sh
-          for attempt in 1 2 3 4 5; do
+          for attempt in 1 2; do
             echo "Starting deploy attempt $attempt..."
-            if ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} 'bash -s' < /tmp/remote_deploy.sh; then
+            if timeout 20m ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "BUILD_IMAGES=$BUILD_IMAGES bash -s" < /tmp/remote_deploy.sh; then
               echo "Deployment successful!"
               exit 0
             fi
-            echo "Deploy failed (attempt $attempt/5), waiting 30s before retry..."
+            echo "Deploy failed (attempt $attempt/2), waiting 30s before retry..."
             sleep 30
           done
           echo "Deploy failed after all attempts"
