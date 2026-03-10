@@ -215,7 +215,9 @@ jobs:
           fi
 
           echo "Starting infrastructure services (DBs & RabbitMQ)..."
-          $COMPOSE_CMD up -d --no-build postgres_users postgres_vehicles rabbitmq
+          $COMPOSE_CMD up -d --no-build postgres_users
+          $COMPOSE_CMD up -d --no-build postgres_vehicles
+          $COMPOSE_CMD up -d --no-build rabbitmq
 
           echo "Waiting for infrastructure health checks..."
           for attempt in $(seq 1 24); do
@@ -239,7 +241,25 @@ jobs:
           done
 
           echo "Starting application services..."
-          $COMPOSE_CMD up -d --no-build user-service vehicle-service frontend
+          $COMPOSE_CMD up -d --no-build user-service
+          $COMPOSE_CMD up -d --no-build vehicle-service
+          $COMPOSE_CMD up -d --no-build frontend
+
+          echo "Validating application containers are running..."
+          for service in frontend user-service vehicle-service; do
+            CONTAINER_ID=$($COMPOSE_CMD ps -q "$service")
+            if [ -z "$CONTAINER_ID" ]; then
+              echo "Container for service '$service' was not created."
+              exit 1
+            fi
+
+            CONTAINER_STATUS=$(sudo docker inspect --format='{{.State.Status}}' "$CONTAINER_ID" 2>/dev/null || echo "missing")
+            if [ "$CONTAINER_STATUS" != "running" ]; then
+              echo "Service '$service' is not running (status=$CONTAINER_STATUS)."
+              sudo docker logs --tail=200 "$CONTAINER_ID" || true
+              exit 1
+            fi
+          done
 
           # Final cleanup
           sudo docker image prune -f >/dev/null 2>&1 || true
