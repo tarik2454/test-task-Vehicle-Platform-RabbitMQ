@@ -4,11 +4,12 @@ on:
   push:
     branches: [main]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       # 1️⃣ Проверяем код репозитория
@@ -47,10 +48,20 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
+            # Выбираем доступную команду compose
+            if sudo docker compose version >/dev/null 2>&1; then
+              COMPOSE_CMD="sudo docker compose"
+            elif command -v docker-compose >/dev/null 2>&1; then
+              COMPOSE_CMD="sudo docker-compose"
+            else
+              echo "Docker Compose is not installed on EC2"
+              exit 1
+            fi
+
             # Запускаем стек контейнеров
-            docker compose down || true
-            docker compose up -d --build
+            $COMPOSE_CMD down || true
+            $COMPOSE_CMD up -d --build
 
             # Отображаем итоговый статус контейнеров
-            docker compose ps
+            $COMPOSE_CMD ps
           EOF
