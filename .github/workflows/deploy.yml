@@ -23,20 +23,17 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      # 1️⃣ Проверяем код репозитория
       - name: Checkout code
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      # 2️⃣ Копируем приватный ключ для SSH
       - name: Copy SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-      # 3️⃣ Добавляем host key EC2 в known_hosts
       - name: Add EC2 host key
         run: |
           touch ~/.ssh/known_hosts
@@ -44,7 +41,6 @@ jobs:
           ssh-keyscan -T 10 -p 22 -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts || echo "ssh-keyscan failed, will use accept-new"
           chmod 644 ~/.ssh/known_hosts
 
-      # 4️⃣ Ожидаем доступность SSH порта
       - name: Wait for SSH port
         run: |
           for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
@@ -58,7 +54,6 @@ jobs:
           echo "SSH port 22 is still unreachable after multiple attempts"
           exit 1
 
-      # 5️⃣ Проверка соединения с сервером (с retry)
       - name: Test SSH connection
         run: |
           SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=60"
@@ -72,7 +67,6 @@ jobs:
           echo "SSH test failed after multiple attempts"
           exit 1
 
-      # 6️⃣ Автоматически определяем необходимость сборки образов
       - name: Decide build mode
         id: build_mode
         run: |
@@ -97,7 +91,7 @@ jobs:
 
               while IFS= read -r file; do
                 case "$file" in
-                  Dockerfile|*/Dockerfile|*/Dockerfile.*|docker-compose.yml|docker-compose.yaml|*/package.json|*/package-lock.json|*/yarn.lock|*/pnpm-lock.yaml)
+                  Dockerfile|*/Dockerfile|*/Dockerfile.*|docker-compose.yml|docker-compose.yaml|*/package.json|*/package-lock.json|*/yarn.lock|*/pnpm-lock.yaml|*/tsconfig.json|*/vite.config.ts|*/drizzle.config.ts )
                     BUILD_IMAGES="true"
                     break
                     ;;
@@ -111,114 +105,109 @@ EOF
           echo "build_images=$BUILD_IMAGES" >> "$GITHUB_OUTPUT"
           echo "Selected build_images=$BUILD_IMAGES"
 
-      # 7️⃣ Деплой на сервер (с retry)
       - name: Deploy App
         run: |
           SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=15 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes -o ConnectTimeout=120"
           BUILD_IMAGES="${{ steps.build_mode.outputs.build_images }}"
           cat > /tmp/remote_deploy.sh << 'EOF'
-            set -euo pipefail
-            
-            echo "Step 1: Resource management (Swap)..."
-            SWAP_SIZE=$(sudo du -m /swapfile 2>/dev/null | cut -f1 || echo "0")
-            if [ "$SWAP_SIZE" -lt "1000" ]; then
-              echo "Configuring 1GB swap space..."
-              sudo swapoff -a || true
-              sudo rm -f /swapfile || true
-              sudo fallocate -l 1024M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
-              sudo chmod 600 /swapfile
-              sudo mkswap /swapfile
-              sudo swapon /swapfile
-            else
-              echo "Swap is already active and sufficient ($SWAP_SIZE MB)."
-            fi
+          set -euo pipefail
 
+          echo "Step 1: Resource management (Swap)..."
+          SWAP_SIZE=$(sudo du -m /swapfile 2>/dev/null | cut -f1 || echo "0")
+          if [ "$SWAP_SIZE" -lt "1000" ]; then
+            echo "Configuring 1GB swap space..."
+            sudo swapoff -a || true
+            sudo rm -f /swapfile || true
+            sudo fallocate -l 1024M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
+          else
+            echo "Swap is already active and sufficient ($SWAP_SIZE MB)."
+          fi
+
+          mkdir -p ~/project
+          cd ~/project
+
+          # Clone repository if needed
+          if [ ! -d ".git" ]; then
+            cd ~
+            rm -rf ~/project
             mkdir -p ~/project
             cd ~/project
+            git clone https://github.com/tarik2454/test-task-Vehicle-Platform-RabbitMQ.git .
+          fi
 
-            # Клонируем репозиторий по HTTPS, если его ещё нет
-            if [ ! -d ".git" ]; then
-              cd ~
-              rm -rf ~/project
-              mkdir -p ~/project
-              cd ~/project
-              git clone https://github.com/tarik2454/test-task-Vehicle-Platform-RabbitMQ.git .
-            fi
+          # Sync code to latest main
+          git fetch origin main
+          git reset --hard origin/main
 
-            # Обновляем код
-            git fetch origin main
-            git reset --hard origin/main
+          # Detect available compose command
+          if sudo docker compose version >/dev/null 2>&1; then
+            COMPOSE_CMD="sudo docker compose"
+          elif command -v docker-compose >/dev/null 2>&1; then
+            COMPOSE_CMD="sudo docker-compose"
+          else
+            echo "Docker Compose is not installed on EC2"
+            exit 1
+          fi
 
-            # Выбираем доступную команду compose
-            if sudo docker compose version >/dev/null 2>&1; then
-              COMPOSE_CMD="sudo docker compose"
-            elif command -v docker-compose >/dev/null 2>&1; then
-              COMPOSE_CMD="sudo docker-compose"
-            else
-              echo "Docker Compose is not installed on EC2"
-              exit 1
-            fi
+          on_error() {
+            echo "Deploy failed. Current container state:"
+            $COMPOSE_CMD ps || true
+            echo "Docker disk usage:"
+            sudo docker system df || true
+            echo "Filesystem usage:"
+            df -h || true
+          }
+          trap on_error ERR
 
-            on_error() {
-              echo "Deploy failed. Current container state:"
-              $COMPOSE_CMD ps || true
-              echo "Docker disk usage:"
-              sudo docker system df || true
-              echo "Filesystem usage:"
-              df -h || true
-            }
-            trap on_error ERR
+          echo "Cleaning up old logs and Docker cache..."
+          sudo journalctl --vacuum-time=1d || true
+          sudo docker builder prune -af || true
+          sudo docker system prune -af || true
 
-            # Останавливаем предыдущую версию только если это критично для памяти
-            # Но лучше делать up --remove-orphans, чтобы минимизировать downtime и нагрузку IO
-            # $COMPOSE_CMD down || true
+          echo "Checking free disk space before build..."
+          AVAILABLE_KB=$(df -Pk / | awk 'NR==2 {print $4}')
+          # Require at least ~2.5GB free to avoid ENOSPC during npm ci in Docker builds
+          if [ "$AVAILABLE_KB" -lt "2621440" ]; then
+            echo "Not enough free disk space on EC2 for Docker build."
+            echo "Please increase EBS volume size (recommended 20GB+) and retry."
+            df -h
+            exit 1
+          fi
 
-            echo "Cleaning up old logs and Docker cache..."
-            sudo journalctl --vacuum-time=1d || true
-            sudo docker builder prune -af || true
-            sudo docker system prune -af || true
+          if [ "${BUILD_IMAGES:-false}" = "true" ]; then
+            echo "BUILD_IMAGES=true: building services sequentially..."
+            # Disable BuildKit to avoid heavy parallelism on small EC2 instances.
+            export DOCKER_BUILDKIT=0
+            export COMPOSE_DOCKER_CLI_BUILD=0
+            echo "Using classic builder for lower peak resource usage."
+            free -h || true
+            # Add per-service timeout so build does not hang forever.
+            timeout 12m $COMPOSE_CMD build --progress=plain user-service
+            timeout 12m $COMPOSE_CMD build --progress=plain vehicle-service
+            timeout 12m $COMPOSE_CMD build --progress=plain frontend
+            free -h || true
+          else
+            echo "BUILD_IMAGES=false: skipping image rebuild to keep EC2 responsive."
+          fi
 
-            echo "Checking free disk space before build..."
-            AVAILABLE_KB=$(df -Pk / | awk 'NR==2 {print $4}')
-            # Require at least ~2.5GB free to avoid ENOSPC during npm ci in Docker builds
-            if [ "$AVAILABLE_KB" -lt "2621440" ]; then
-              echo "Not enough free disk space on EC2 for Docker build."
-              echo "Please increase EBS volume size (recommended 20GB+) and retry."
-              df -h
-              exit 1
-            fi
+          echo "Starting infrastructure services (DBs & RabbitMQ)..."
+          $COMPOSE_CMD up -d postgres_users postgres_vehicles rabbitmq
 
-            if [ "${BUILD_IMAGES:-false}" = "true" ]; then
-              echo "BUILD_IMAGES=true: building services sequentially..."
-              # Disable BuildKit to avoid heavy parallelism on small EC2 instances.
-              export DOCKER_BUILDKIT=0
-              export COMPOSE_DOCKER_CLI_BUILD=0
-              echo "Using classic builder for lower peak resource usage."
-              free -h || true
-              # Add per-service timeout so build does not hang forever.
-              timeout 12m $COMPOSE_CMD build --progress=plain user-service
-              timeout 12m $COMPOSE_CMD build --progress=plain vehicle-service
-              timeout 12m $COMPOSE_CMD build --progress=plain frontend
-              free -h || true
-            else
-              echo "BUILD_IMAGES=false: skipping image rebuild to keep EC2 responsive."
-            fi
+          echo "Waiting for infrastructure to be ready..."
+          sleep 10
 
-            echo "Starting infrastructure services (DBs & RabbitMQ)..."
-            $COMPOSE_CMD up -d postgres_users postgres_vehicles rabbitmq
-            
-            echo "Waiting for infrastructure to be ready..."
-            sleep 10
+          echo "Starting application services..."
+          $COMPOSE_CMD up -d user-service vehicle-service frontend
 
-            echo "Starting application services..."
-            $COMPOSE_CMD up -d user-service vehicle-service frontend
+          # Final cleanup
+          sudo docker image prune -f >/dev/null 2>&1 || true
 
-            # Финальная очистка
-            sudo docker image prune -f >/dev/null 2>&1 || true
-            
-            echo "Final status:"
-            $COMPOSE_CMD ps
-          EOF
+          echo "Final status:"
+          $COMPOSE_CMD ps
+EOF
 
           chmod +x /tmp/remote_deploy.sh
           for attempt in 1 2; do
