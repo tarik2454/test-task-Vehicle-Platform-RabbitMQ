@@ -195,7 +195,23 @@ jobs:
             timeout 12m $COMPOSE_CMD build --progress=plain frontend
             free -h || true
           else
-            echo "BUILD_IMAGES=false: skipping image rebuild to keep EC2 responsive."
+            echo "BUILD_IMAGES=false: trying to reuse existing local images."
+            USER_IMAGE_ID=$($COMPOSE_CMD images -q user-service 2>/dev/null || true)
+            VEHICLE_IMAGE_ID=$($COMPOSE_CMD images -q vehicle-service 2>/dev/null || true)
+            FRONTEND_IMAGE_ID=$($COMPOSE_CMD images -q frontend 2>/dev/null || true)
+
+            if [ -z "$USER_IMAGE_ID" ] || [ -z "$VEHICLE_IMAGE_ID" ] || [ -z "$FRONTEND_IMAGE_ID" ]; then
+              echo "One or more service images are missing. Running first-time build automatically..."
+              export DOCKER_BUILDKIT=0
+              export COMPOSE_DOCKER_CLI_BUILD=0
+              free -h || true
+              timeout 12m $COMPOSE_CMD build --progress=plain user-service
+              timeout 12m $COMPOSE_CMD build --progress=plain vehicle-service
+              timeout 12m $COMPOSE_CMD build --progress=plain frontend
+              free -h || true
+            else
+              echo "All local images found. Skipping build."
+            fi
           fi
 
           echo "Starting infrastructure services (DBs & RabbitMQ)..."
