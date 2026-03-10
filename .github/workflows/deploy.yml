@@ -126,12 +126,19 @@ jobs:
             df -h
 
             # Собираем новые образы последовательно
-            $COMPOSE_CMD build frontend
+            # --no-cache гарантирует, что кэш сборки не будет забивать диск (на t2.micro с 8GB диска кэши от 3-х сервисов приводят к ENOSPC)
+            $COMPOSE_CMD build --no-cache frontend
+            sudo docker image prune -f >/dev/null 2>&1 || true
             sudo docker builder prune -af >/dev/null 2>&1 || true
-            $COMPOSE_CMD build user-service
+
+            $COMPOSE_CMD build --no-cache user-service
+            sudo docker image prune -f >/dev/null 2>&1 || true
             sudo docker builder prune -af >/dev/null 2>&1 || true
-            $COMPOSE_CMD build vehicle-service
+
+            $COMPOSE_CMD build --no-cache vehicle-service
+            sudo docker image prune -f >/dev/null 2>&1 || true
             sudo docker builder prune -af >/dev/null 2>&1 || true
+            
             $COMPOSE_CMD up -d
 
             # Отображаем итоговый статус контейнеров
