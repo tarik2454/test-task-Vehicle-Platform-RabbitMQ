@@ -72,12 +72,6 @@ jobs:
           cat > /tmp/remote_deploy.sh << 'EOF'
             set -euo pipefail
             
-            # Очищаем старые Docker образы, контейнеры и кэши для освобождения места
-            echo "Cleaning up disk space (docker system prune)..."
-            if sudo docker system prune -af --volumes >/dev/null 2>&1; then
-              echo "Docker pruned successfully."
-            fi
-            
             echo "Setting up swap space (if it doesn't already exist)..."
             if [ ! -f /swapfile ] && [ $(sudo swapon --show | wc -l) -eq 0 ]; then
               sudo fallocate -l 1536M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1536
@@ -120,8 +114,18 @@ jobs:
             }
             trap on_error ERR
 
-            # Запускаем стек контейнеров (последовательно для экономии RAM)
+            # Останавливаем старые контейнеры
             $COMPOSE_CMD down || true
+
+            # Теперь, когда контейнеры остановлены, prune сможет удалить их старые образы!
+            echo "Cleaning up disk space (docker system prune & logs)..."
+            sudo journalctl --vacuum-time=1d || true
+            if sudo docker system prune -af --volumes >/dev/null 2>&1; then
+              echo "Docker pruned successfully."
+            fi
+            df -h
+
+            # Собираем новые образы последовательно
             $COMPOSE_CMD build frontend
             sudo docker builder prune -af >/dev/null 2>&1 || true
             $COMPOSE_CMD build user-service
