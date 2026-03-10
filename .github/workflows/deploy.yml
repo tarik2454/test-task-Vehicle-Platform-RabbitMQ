@@ -26,6 +26,8 @@ jobs:
       # 1️⃣ Проверяем код репозитория
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       # 2️⃣ Копируем приватный ключ для SSH
       - name: Copy SSH key
@@ -70,11 +72,50 @@ jobs:
           echo "SSH test failed after multiple attempts"
           exit 1
 
-      # 6️⃣ Деплой на сервер (с retry)
+      # 6️⃣ Автоматически определяем необходимость сборки образов
+      - name: Decide build mode
+        id: build_mode
+        run: |
+          BUILD_IMAGES="false"
+
+          # Manual override for workflow_dispatch
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.build_images }}" = "true" ]; then
+            BUILD_IMAGES="true"
+            echo "Manual override: build_images=true"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            BEFORE_SHA="${{ github.event.before }}"
+            AFTER_SHA="${{ github.sha }}"
+
+            # First push to branch or unknown base SHA: force build for safety
+            if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+              BUILD_IMAGES="true"
+              echo "Initial push detected: build_images=true"
+            else
+              CHANGED_FILES=$(git diff --name-only "$BEFORE_SHA" "$AFTER_SHA")
+              echo "Changed files:"
+              echo "$CHANGED_FILES"
+
+              while IFS= read -r file; do
+                case "$file" in
+                  Dockerfile|*/Dockerfile|*/Dockerfile.*|docker-compose.yml|docker-compose.yaml|*/package.json|*/package-lock.json|*/yarn.lock|*/pnpm-lock.yaml)
+                    BUILD_IMAGES="true"
+                    break
+                    ;;
+                esac
+              done <<EOF
+$CHANGED_FILES
+EOF
+            fi
+          fi
+
+          echo "build_images=$BUILD_IMAGES" >> "$GITHUB_OUTPUT"
+          echo "Selected build_images=$BUILD_IMAGES"
+
+      # 7️⃣ Деплой на сервер (с retry)
       - name: Deploy App
         run: |
           SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=15 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes -o ConnectTimeout=120"
-          BUILD_IMAGES="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_images || 'false' }}"
+          BUILD_IMAGES="${{ steps.build_mode.outputs.build_images }}"
           cat > /tmp/remote_deploy.sh << 'EOF'
             set -euo pipefail
             
@@ -149,10 +190,16 @@ jobs:
 
             if [ "${BUILD_IMAGES:-false}" = "true" ]; then
               echo "BUILD_IMAGES=true: building services sequentially..."
-              # Sequential build reduces peak RAM/CPU usage on small EC2 instances.
-              $COMPOSE_CMD build user-service
-              $COMPOSE_CMD build vehicle-service
-              $COMPOSE_CMD build frontend
+              # Disable BuildKit to avoid heavy parallelism on small EC2 instances.
+              export DOCKER_BUILDKIT=0
+              export COMPOSE_DOCKER_CLI_BUILD=0
+              echo "Using classic builder for lower peak resource usage."
+              free -h || true
+              # Add per-service timeout so build does not hang forever.
+              timeout 12m $COMPOSE_CMD build --progress=plain user-service
+              timeout 12m $COMPOSE_CMD build --progress=plain vehicle-service
+              timeout 12m $COMPOSE_CMD build --progress=plain frontend
+              free -h || true
             else
               echo "BUILD_IMAGES=false: skipping image rebuild to keep EC2 responsive."
             fi
