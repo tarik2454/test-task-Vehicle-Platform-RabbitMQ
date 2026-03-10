@@ -3,13 +3,19 @@ name: Deploy to EC2
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+concurrency:
+  group: deploy-ec2-main
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       # 1️⃣ Проверяем код репозитория
@@ -23,17 +29,23 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-      # 3️⃣ Проверка соединения с сервером
+      # 3️⃣ Добавляем host key EC2 в known_hosts
+      - name: Add EC2 host key
+        run: |
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      # 4️⃣ Проверка соединения с сервером
       - name: Test SSH connection
         run: |
-          SSH_OPTS="-o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=30"
-          ssh $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH OK'"
+          SSH_OPTS="-o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=30"
+          ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH OK'"
 
-      # 4️⃣ Деплой на сервер
+      # 5️⃣ Деплой на сервер
       - name: Deploy App
         run: |
-          SSH_OPTS="-o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=30"
-          ssh $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          SSH_OPTS="-o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=30"
+          ssh -i ~/.ssh/id_ed25519 $SSH_OPTS ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             set -e
             mkdir -p ~/project
             cd ~/project
