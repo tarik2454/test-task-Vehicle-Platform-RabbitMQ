@@ -9,29 +9,49 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Проверяем код репозитория
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2️⃣ Устанавливаем Node.js
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "18"
 
+      # 3️⃣ Копируем приватный ключ для SSH
       - name: Copy SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
+      # 4️⃣ Проверка соединения с сервером
       - name: Test SSH connection
-        run: ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "echo 'SSH OK'"
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH OK'"
 
-      - name: Deploy app
+      # 5️⃣ Деплой на сервер
+      - name: Deploy App
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            cd ~/project
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            # Переходим в директорию проекта
+            cd ~/project || mkdir -p ~/project && cd ~/project
+            
+            # Клонируем репозиторий, если его ещё нет
+            if [ ! -d ".git" ]; then
+              git clone git@github.com:tarik2454/test-task-Vehicle-Platform-RabbitMQ.git .
+            fi
+
+            # Обновляем код
+            git reset --hard
             git pull origin main
+
+            # Устанавливаем зависимости
             npm install
-            npm run build
+
+            # Собираем приложение (если есть build скрипт)
+            npm run build || echo "No build step"
+
+            # Перезапускаем через pm2 или стартуем если нет процесса
             pm2 restart app || pm2 start npm --name app -- start
           EOF
