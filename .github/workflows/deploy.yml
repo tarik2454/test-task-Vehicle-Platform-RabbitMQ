@@ -71,6 +71,15 @@ jobs:
           SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -o TCPKeepAlive=yes -o ConnectTimeout=60"
           cat > /tmp/remote_deploy.sh << 'EOF'
             set -euo pipefail
+            
+            echo "Setting up swap space (if it doesn't already exist)..."
+            if [ ! -f /swapfile ] && [ $(sudo swapon --show | wc -l) -eq 0 ]; then
+              sudo fallocate -l 2G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+              sudo chmod 600 /swapfile
+              sudo mkswap /swapfile
+              sudo swapon /swapfile
+            fi
+
             mkdir -p ~/project
             cd ~/project
 
@@ -105,9 +114,12 @@ jobs:
             }
             trap on_error ERR
 
-            # Запускаем стек контейнеров
+            # Запускаем стек контейнеров (последовательно для экономии RAM)
             $COMPOSE_CMD down || true
-            $COMPOSE_CMD up -d --build
+            $COMPOSE_CMD build frontend
+            $COMPOSE_CMD build user-service
+            $COMPOSE_CMD build vehicle-service
+            $COMPOSE_CMD up -d
 
             # Отображаем итоговый статус контейнеров
             $COMPOSE_CMD ps
