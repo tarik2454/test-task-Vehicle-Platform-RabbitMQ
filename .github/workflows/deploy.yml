@@ -72,13 +72,13 @@ jobs:
           cat > /tmp/remote_deploy.sh << 'EOF'
             set -euo pipefail
             
-            echo "Setting up swap space (if it doesn't already exist)..."
-            if [ ! -f /swapfile ] && [ $(sudo swapon --show | wc -l) -eq 0 ]; then
-              sudo fallocate -l 2G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
-              sudo chmod 600 /swapfile
-              sudo mkswap /swapfile
-              sudo swapon /swapfile
-            fi
+            echo "Reconfiguring swap space to exactly 1GB to free up disk space..."
+            sudo swapoff -a || true
+            sudo rm -f /swapfile || true
+            sudo fallocate -l 1024M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
 
             mkdir -p ~/project
             cd ~/project
@@ -117,12 +117,13 @@ jobs:
             # Останавливаем старые контейнеры
             $COMPOSE_CMD down || true
 
-            # Теперь, когда контейнеры остановлены, prune сможет удалить их старые образы!
+            # Теперь очищаем мусор БЕЗ удаления баз данных!
+            # ВАЖНО: Убрано --volumes, так как это удаляет данные PostgreSQL!
+            # ВАЖНО: Убрано -a, чтобы не удалять скачанные node/postgres/rabbitmq.
             echo "Cleaning up disk space (docker system prune & logs)..."
             sudo journalctl --vacuum-time=1d || true
-            if sudo docker system prune -af --volumes >/dev/null 2>&1; then
-              echo "Docker pruned successfully."
-            fi
+            sudo docker system prune -f >/dev/null 2>&1 || true
+            sudo docker builder prune -af >/dev/null 2>&1 || true
             df -h
 
             # Собираем новые образы последовательно
