@@ -3,7 +3,7 @@ WORKDIR /app
 
 # Устанавливаем зависимости и сразу очищаем кэш npm для экономии места
 COPY package*.json ./
-RUN npm install && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Копируем весь код для разработки
 COPY . .

@@ -2,11 +2,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Устанавливаем postgresql-client для pg_isready
-RUN apk add --no-cache postgresql-client bash
+# Устанавливаем postgresql-client для pg_isready и очищаем кэш apk
+RUN apk add --no-cache postgresql-client bash && rm -rf /var/cache/apk/*
 
 COPY package*.json ./
-RUN npm install && npm cache clean --force
+RUN npm ci --legacy-peer-deps && npm cache clean --force
 
 COPY tsconfig.json ./
 COPY src ./src
