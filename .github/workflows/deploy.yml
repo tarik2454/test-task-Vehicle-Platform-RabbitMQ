@@ -52,6 +52,6 @@ jobs:
             # Собираем приложение (если есть build скрипт)
             npm run build || echo "No build step"
 
-            # Перезапускаем через pm2 или стартуем если нет процесса
-            pm2 restart app || pm2 start npm --name app -- start
+            # Запускаем через pm2 или рестартуем, если процесс уже есть
+            pm2 start npm --name app -- start --update-env || pm2 restart app --update-env
           EOF
