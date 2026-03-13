@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: "#757575" }}>
       <Toolbar>
         <Button color="inherit" component={Link} to="/">
           Home
