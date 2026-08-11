@@ -1,35 +1,17 @@
 # Environment
 
-## Files
+## Frontend
 
-- `.env`
-- `.env.example`
-- `env.d.ts`
+- Local env file: `frontend/.env`
+- Current local frontend port: `3000`
+- Frontend API helper code derives the hostname from `window.location.hostname`
 
-## Variables
+## API Usage
 
-- `NEXT_PUBLIC_NODE_ENV`
-- `NEXT_PUBLIC_WEBSITE_URL`
-- `NEXT_PUBLIC_API_BASE_URL`
-- `SSR_API_URL`
-- `NEXT_PUBLIC_SENTRY_DSN`
-
-## Main Usage
-
-- `src/server/apiAxios.ts`
-- `src/ws/index.ts`
-- `src/utils/image.ts`
-- `src/hooks/useOAuth.ts`
-- `src/providers/index.tsx`
-- `src/proxy.ts`
-- `src/seo/base.config.ts`
-- `sentry.client.config.ts`
-- `sentry.edge.config.ts`
-- `sentry.server.config.ts`
+- Users API port referenced by the frontend helper layer: `4001`
+- Vehicles API port referenced by the frontend helper layer: `4002`
 
 ## Rules
 
-- Keep `env.d.ts` and `.env.example` in sync
-- Use placeholders only in `.env.example`
-- Prefer adding a variable to `env.d.ts` when it is used in app code
-- When changing host or redirect behavior, review platform pages, creator URLs, auth callbacks, and proxy routes together
+- Keep documented env and runtime assumptions aligned with actual frontend code.
+- When ports or host assumptions change, update `.codex/context/commands.md` and `.codex/context/env.md`.

@@ -52,14 +52,18 @@ services:
     build:
       context: ./frontend
     container_name: frontend
+    depends_on:
+      user-service:
+        condition: service_started
+      vehicle-service:
+        condition: service_started
     ports:
-      - "5173:5173"
+      - "3000:3000"
     volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-      - ./frontend/package.json:/app/package.json
-      - ./frontend/package-lock.json:/app/package-lock.json
-    command: npm run dev
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev -- --hostname 0.0.0.0 --port 3000
 
   user-service:
     build: ./user-service

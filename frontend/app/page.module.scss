@@ -1,0 +1,92 @@
+.page {
+  min-height: 100vh;
+  padding: 56px 24px;
+  background:
+    radial-gradient(circle at top, rgba(37, 99, 235, 0.14), transparent 32%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.container {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 24px;
+}
+
+.hero {
+  padding: 32px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #2563eb;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  color: #0f172a;
+}
+
+.description {
+  max-width: 640px;
+  margin: 16px 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #475569;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+  border-radius: 20px;
+  text-decoration: none;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(255, 255, 255, 0.92);
+  color: inherit;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(37, 99, 235, 0.34);
+  box-shadow: 0 20px 38px rgba(37, 99, 235, 0.12);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #0f172a;
+}
+
+.cardText {
+  margin: 0;
+  line-height: 1.6;
+  color: #475569;
+}
+
+.cardMeta {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1d4ed8;
+}

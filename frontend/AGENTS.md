@@ -14,28 +14,28 @@ Project documentation for local development is stored in `.codex/`.
 
 ## Structure
 
-- `.codex/context/repo-map.md` - a short map of the repository and its main directories.
-- `.codex/context/commands.md` - development commands, environment notes, and useful links.
-- `.codex/context/team-guidelines.md` - team ownership, collaboration, SSOT, branch, and commit rules.
-- `.codex/rules/critical-rules.md` - important local rules and constraints.
+- `.codex/context/repo-map.md` - a short map of the frontend app and its main directories.
+- `.codex/context/commands.md` - frontend development commands, environment notes, and useful links.
+- `.codex/context/team-guidelines.md` - frontend collaboration, SSOT, branch, and commit rules.
+- `.codex/rules/critical-rules.md` - important local frontend rules and constraints.
 - `.codex/skills/local-commits/SKILL.md` - local skill for branch names and commit messages.
 - `.codex/skills/local-prs/SKILL.md` - local skill for PR titles and PR bodies.
 
 ## Principles
 
-- Keep local links, notes, and project context in `.codex/`, not in the root `docs/` directory.
-- Use `.codex` as the primary source of repository-specific context and update it when new stable, useful project information appears.
-- Keep `.codex` aligned with this frontend repository, not with the separate admin frontend.
-- Treat `AGENTS.md` as the short entrypoint and `.codex/` as the detailed local knowledge base.
+- Keep frontend-only links, notes, and project context in `frontend/.codex/`.
+- Use `.codex` as the primary source of frontend-specific context and update it when new stable, useful frontend information appears.
+- Keep `.codex` aligned with the actual `frontend/` app, not with backend services or unrelated repo areas.
+- Treat `AGENTS.md` as the short entrypoint and `.codex/` as the detailed frontend knowledge base.
 - Do not add secrets, tokens, or private keys to Markdown files.
 - If new useful development information appears, update the appropriate file in `.codex/`.
 - Use `.codex/context/team-guidelines.md` for team ownership and collaboration rules.
 
 ## Current Project Scope
 
-- This repository is the main RewardsVip frontend.
-- It includes public platform pages, creator-facing pages, auth flows, chat, docs pages, live pages, and the embedded backoffice admin area.
-- Do not assume this project is admin-only. Route groups under `src/app/` must be evaluated in context before changing shared UI, layout, auth, SEO, or websocket behavior.
+- This local context is only for the `frontend/` app.
+- The active frontend uses Next.js app router under `app/`, but the folder also contains older `src/` files that should be treated as legacy until verified otherwise.
+- Do not document backend services, databases, queues, or repo-wide infrastructure here unless it directly affects frontend runtime or API usage.
 
 ## Contract-First Rule
 
@@ -43,16 +43,16 @@ For tasks involving external integrations or contracts, do not guess.
 
 This includes:
 
-- backend API request and response fields
-- Swagger and OpenAPI contracts
+- frontend API request and response fields
+- framework and library integration points
 - SDK and library integration points
-- third-party service configuration
-- enums, payload formats, query params, headers, and mutation bodies
+- page params, query params, headers, and payload shapes
+- third-party frontend configuration
 
 Required verification order:
 
-1. Check local typed contracts and existing project usage.
-2. Verify the external contract in the relevant documentation or contract source.
+1. Check local frontend code, types, and existing usage.
+2. Verify the external contract in the relevant documentation or current source.
 3. Only then implement the minimal necessary change.
 
 Do not add speculative fallback fields or extra payload keys unless verified by docs or real API responses.
@@ -60,20 +60,19 @@ Do not use speculative API or integration fixes when the contract is unclear.
 
 ## Team Coordination Rule
 
-- Before large or architectural changes, check `.codex/context/team-guidelines.md` for code owners and coordination expectations.
-- For module-owner areas, tag or consult the owner before broad edits, conflict resolution, or risky refactors.
-- Keep fixes SSOT-oriented: fix the root component, hook, utility, or mapper rather than duplicating logic across screens.
+- Before large or architectural frontend changes, check `.codex/context/team-guidelines.md`.
+- Keep fixes SSOT-oriented: fix the root component, helper, style layer, or page wrapper rather than duplicating logic across screens.
 
 ## Frontend Change Rule
 
-Before changing navigation, layouts, shared providers, route groups, or common UI primitives:
+Before changing navigation, layouts, shared providers, route groups, styling infrastructure, or common UI primitives:
 
-1. Check whether the code is used by platform pages, creator pages, and backoffice pages.
-2. Confirm whether there is a route-group-specific layout or wrapper that is safer to change.
-3. Prefer the narrowest surface that solves the issue without altering unrelated experiences.
+1. Check whether the code lives in the active `app/` surface or older `src/` legacy surface.
+2. Confirm whether there is a route-specific layout or wrapper that is safer to change.
+3. Prefer the narrowest frontend surface that solves the issue without altering unrelated pages.
 
 ## Local Context Hygiene
 
-- Keep `.codex` concise and high-signal.
-- Prefer durable facts over temporary debugging notes.
+- Keep `.codex` concise and frontend-only.
+- Prefer durable frontend facts over temporary debugging notes.
 - When a local note becomes outdated, update or delete it instead of letting conflicting guidance accumulate.

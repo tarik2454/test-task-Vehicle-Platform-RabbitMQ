@@ -1,41 +1,80 @@
-// 'use client';
+'use client';
 
-// import { useEffect } from 'react';
+type ErrorPageProps = {
+  error: Error & { digest?: string };
+  reset: () => void;
+};
 
-// import * as Sentry from '@sentry/nextjs';
-// import Image from 'next/image';
-// import Link from 'next/link';
-
-// import { Button } from '@/components/ui';
-
-// import { ROUTES } from '@/constants/routes';
-
-// export default function Error({ error }: { error: Error & { digest?: string } }) {
-// 	useEffect(() => {
-// 		Sentry.captureException(error);
-// 	}, [error]);
-
-// 	return (
-// 		<div className="relative flex h-full w-full items-center justify-center px-4">
-// 			<div className="absolute h-full w-full">
-// 				<Image
-// 					className="object-cover"
-// 					src="/decors/empty-state-bg.png"
-// 					alt="empty-state-decor"
-// 					fill
-// 				/>
-// 			</div>
-// 			<div className="relative flex flex-col items-center gap-y-8 text-center sm:gap-y-[25px]">
-// 				<h1 className="text-4xl font-bold text-neutral-900">Oops! Something went wrong.</h1>
-// 				<div className="max-w-[500px] text-xl leading-[26px] font-bold text-neutral-900/75">
-// 					Don’t worry! We're working on it. In the meantime, you can head back to the homepage
-// 				</div>
-// 				<Link href={ROUTES.HOME} className="inline-flex w-full justify-center">
-// 					<Button variant="primary" size="lg" className="w-full sm:w-fit">
-// 						Go to Home
-// 					</Button>
-// 				</Link>
-// 			</div>
-// 		</div>
-// 	);
-// }
+export default function Error({ error, reset }: ErrorPageProps) {
+  return (
+    <main
+      style={{
+        minHeight: '100vh',
+        display: 'grid',
+        placeItems: 'center',
+        padding: '24px',
+        background:
+          'radial-gradient(circle at top, rgba(239, 68, 68, 0.12), transparent 30%), #f8fafc',
+      }}
+    >
+      <section
+        style={{
+          width: 'min(520px, 100%)',
+          padding: '28px',
+          borderRadius: '24px',
+          background: 'rgba(255, 255, 255, 0.95)',
+          border: '1px solid rgba(148, 163, 184, 0.22)',
+          boxShadow: '0 18px 40px rgba(15, 23, 42, 0.08)',
+        }}
+      >
+        <p
+          style={{
+            margin: '0 0 12px',
+            fontSize: '12px',
+            fontWeight: 700,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: '#dc2626',
+          }}
+        >
+          Application Error
+        </p>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: '2rem',
+            color: '#0f172a',
+          }}
+        >
+          Что-то пошло не так
+        </h1>
+        <p
+          style={{
+            margin: '14px 0 0',
+            lineHeight: 1.7,
+            color: '#475569',
+          }}
+        >
+          {error.message || 'Не удалось отрисовать страницу.'}
+        </p>
+        <button
+          type="button"
+          onClick={reset}
+          style={{
+            marginTop: '20px',
+            minHeight: '44px',
+            padding: '0 18px',
+            border: 0,
+            borderRadius: '999px',
+            background: '#2563eb',
+            color: '#fff',
+            fontWeight: 600,
+            cursor: 'pointer',
+          }}
+        >
+          Попробовать снова
+        </button>
+      </section>
+    </main>
+  );
+}
