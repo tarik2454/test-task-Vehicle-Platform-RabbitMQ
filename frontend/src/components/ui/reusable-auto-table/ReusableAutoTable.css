@@ -1,0 +1,135 @@
+.autoTableRoot {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #27272a;
+  border-radius: 14px;
+  background: #18181b;
+  color: #fafafa;
+}
+
+.autoTableScroll {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+}
+
+.autoTable {
+  display: table;
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+.autoTableHead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.autoTableHeaderCell {
+  padding: 10px 20px;
+  background: #27272a;
+  color: #a1a1aa;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.autoTableCell {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f4f4f5;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  vertical-align: middle;
+}
+
+.autoTableRow {
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.autoTableRow:hover {
+  background: #27272a;
+}
+
+.autoTableRowClickable,
+.autoTableRowClickable .autoTableCell {
+  cursor: pointer;
+}
+
+.autoTableStateCell {
+  padding: 32px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a1a1aa;
+  font-size: 14px;
+  text-align: center;
+}
+
+.autoTablePagination {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.autoTableFooterStart {
+  color: #a1a1aa;
+  font-size: 13px;
+}
+
+.autoTablePager {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.autoTablePageButton {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: #27272a;
+  color: #f4f4f5;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.autoTablePageButton:hover:not(:disabled) {
+  background: #3f3f46;
+}
+
+.autoTablePageButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.autoTablePageButtonActive {
+  background: #facc15;
+  color: #09090b;
+}
+
+@media (max-width: 720px) {
+  .autoTablePagination {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .autoTablePager {
+    flex-wrap: wrap;
+  }
+}
