@@ -113,156 +113,154 @@ export default function VehiclesPage() {
   }
 
   return (
-    <div className={styles.page}>
-      <PageWrapper>
-        <Container>
-          <div className={styles.container}>
-            <header className={styles.header}>
-              <h1 className={styles.title}>Машины</h1>
-              <p className={styles.subtitle}>
-                Страница оформлена через SCSS-модуль и использует минимальную
-                форму, чтобы добавить транспорт и увидеть связь с пользователем.
-              </p>
-            </header>
+    <PageWrapper className={styles.pageWrapper}>
+      <Container>
+        <div className={styles.container}>
+          <header className={styles.header}>
+            <h1 className={styles.title}>Машины</h1>
+            <p className={styles.subtitle}>
+              Страница оформлена через SCSS-модуль и использует минимальную
+              форму, чтобы добавить транспорт и увидеть связь с пользователем.
+            </p>
+          </header>
 
-            <section className={styles.card}>
-              <h2 className={styles.sectionTitle}>Новая машина</h2>
-              <form className={styles.form} onSubmit={handleSubmit}>
-                <div className={styles.fields}>
-                  <label className={styles.field}>
-                    <span className={styles.label}>Пользователь</span>
-                    <select
-                      required
-                      className={styles.select}
-                      value={form.userId}
-                      onChange={(event) =>
-                        setForm((current) => ({
-                          ...current,
-                          userId: event.target.value,
-                        }))
-                      }
-                    >
-                      <option value="">Выберите пользователя</option>
-                      {users.map((user) => (
-                        <option key={user.id} value={user.id}>
-                          {user.name || user.email}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label className={styles.field}>
-                    <span className={styles.label}>Марка</span>
-                    <input
-                      type="text"
-                      className={styles.input}
-                      value={form.make}
-                      onChange={(event) =>
-                        setForm((current) => ({
-                          ...current,
-                          make: event.target.value,
-                        }))
-                      }
-                      placeholder="Toyota"
-                    />
-                  </label>
-
-                  <label className={styles.field}>
-                    <span className={styles.label}>Модель</span>
-                    <input
-                      type="text"
-                      className={styles.input}
-                      value={form.model}
-                      onChange={(event) =>
-                        setForm((current) => ({
-                          ...current,
-                          model: event.target.value,
-                        }))
-                      }
-                      placeholder="Corolla"
-                    />
-                  </label>
-
-                  <label className={styles.field}>
-                    <span className={styles.label}>Год</span>
-                    <input
-                      type="number"
-                      className={styles.input}
-                      value={form.year}
-                      onChange={(event) =>
-                        setForm((current) => ({
-                          ...current,
-                          year: event.target.value,
-                        }))
-                      }
-                      placeholder="2024"
-                    />
-                  </label>
-                </div>
-
-                <div className={styles.actions}>
-                  <button
-                    type="submit"
-                    className={`${styles.button} ${styles.buttonPrimary}`}
-                    disabled={isSubmitting || users.length === 0}
+          <section className={styles.card}>
+            <h2 className={styles.sectionTitle}>Новая машина</h2>
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <div className={styles.fields}>
+                <label className={styles.field}>
+                  <span className={styles.label}>Пользователь</span>
+                  <select
+                    required
+                    className={styles.select}
+                    value={form.userId}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        userId: event.target.value,
+                      }))
+                    }
                   >
-                    {isSubmitting ? "Сохраняем..." : "Создать машину"}
-                  </button>
-                </div>
-              </form>
-              {error ? (
-                <p className={`${styles.status} ${styles.statusError}`}>
-                  {error}
-                </p>
-              ) : null}
-            </section>
+                    <option value="">Выберите пользователя</option>
+                    {users.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.name || user.email}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-            <section className={styles.card}>
-              <h2 className={styles.sectionTitle}>Список машин</h2>
-              {isLoading ? <p className={styles.status}>Загрузка...</p> : null}
-              {!isLoading && vehicles.length === 0 ? (
-                <p className={styles.emptyState}>Машин пока нет.</p>
-              ) : null}
-              {!isLoading && vehicles.length > 0 ? (
-                <div className={styles.tableWrap}>
-                  <table className={styles.table}>
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Марка</th>
-                        <th>Модель</th>
-                        <th>Год</th>
-                        <th>Пользователь</th>
-                        <th>Действие</th>
+                <label className={styles.field}>
+                  <span className={styles.label}>Марка</span>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={form.make}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        make: event.target.value,
+                      }))
+                    }
+                    placeholder="Toyota"
+                  />
+                </label>
+
+                <label className={styles.field}>
+                  <span className={styles.label}>Модель</span>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={form.model}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        model: event.target.value,
+                      }))
+                    }
+                    placeholder="Corolla"
+                  />
+                </label>
+
+                <label className={styles.field}>
+                  <span className={styles.label}>Год</span>
+                  <input
+                    type="number"
+                    className={styles.input}
+                    value={form.year}
+                    onChange={(event) =>
+                      setForm((current) => ({
+                        ...current,
+                        year: event.target.value,
+                      }))
+                    }
+                    placeholder="2024"
+                  />
+                </label>
+              </div>
+
+              <div className={styles.actions}>
+                <button
+                  type="submit"
+                  className={`${styles.button} ${styles.buttonPrimary}`}
+                  disabled={isSubmitting || users.length === 0}
+                >
+                  {isSubmitting ? "Сохраняем..." : "Создать машину"}
+                </button>
+              </div>
+            </form>
+            {error ? (
+              <p className={`${styles.status} ${styles.statusError}`}>
+                {error}
+              </p>
+            ) : null}
+          </section>
+
+          <section className={styles.card}>
+            <h2 className={styles.sectionTitle}>Список машин</h2>
+            {isLoading ? <p className={styles.status}>Загрузка...</p> : null}
+            {!isLoading && vehicles.length === 0 ? (
+              <p className={styles.emptyState}>Машин пока нет.</p>
+            ) : null}
+            {!isLoading && vehicles.length > 0 ? (
+              <div className={styles.tableWrap}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Марка</th>
+                      <th>Модель</th>
+                      <th>Год</th>
+                      <th>Пользователь</th>
+                      <th>Действие</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vehicles.map((vehicle) => (
+                      <tr key={vehicle.id}>
+                        <td>{vehicle.id}</td>
+                        <td>{vehicle.make}</td>
+                        <td>{vehicle.model}</td>
+                        <td>{vehicle.year ?? "—"}</td>
+                        <td>{getUserLabel(vehicle.userId)}</td>
+                        <td>
+                          <button
+                            type="button"
+                            className={`${styles.button} ${styles.buttonDanger}`}
+                            onClick={() => void handleDelete(vehicle.id)}
+                          >
+                            Удалить
+                          </button>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {vehicles.map((vehicle) => (
-                        <tr key={vehicle.id}>
-                          <td>{vehicle.id}</td>
-                          <td>{vehicle.make}</td>
-                          <td>{vehicle.model}</td>
-                          <td>{vehicle.year ?? "—"}</td>
-                          <td>{getUserLabel(vehicle.userId)}</td>
-                          <td>
-                            <button
-                              type="button"
-                              className={`${styles.button} ${styles.buttonDanger}`}
-                              onClick={() => void handleDelete(vehicle.id)}
-                            >
-                              Удалить
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : null}
-            </section>
-          </div>
-        </Container>
-      </PageWrapper>
-    </div>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+          </section>
+        </div>
+      </Container>
+    </PageWrapper>
   );
 }
