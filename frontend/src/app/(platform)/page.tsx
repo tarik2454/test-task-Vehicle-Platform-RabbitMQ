@@ -23,16 +23,23 @@ export default function Home() {
       <div className={styles.container}>
         <section className={styles.hero}>
           <p className={styles.eyebrow}>Vehicle Platform</p>
-          <h1 className={styles.title}>Небольшая панель для работы с юзерами и машинами</h1>
+          <h1 className={styles.title}>
+            Небольшая панель для работы с юзерами и машинами
+          </h1>
           <p className={styles.description}>
-            Главная страница теперь оформлена через SCSS-модуль и даёт быстрый вход
-            в два основных сценария: управление пользователями и транспортом.
+            Главная страница теперь оформлена через SCSS-модуль и даёт быстрый
+            вход в два основных сценария: управление пользователями и
+            транспортом.
           </p>
         </section>
 
         <section className={styles.grid} aria-label="Navigation">
           {sections.map((section) => (
-            <Link key={section.href} href={section.href} className={styles.card}>
+            <Link
+              key={section.href}
+              href={section.href}
+              className={styles.card}
+            >
               <h2 className={styles.cardTitle}>{section.title}</h2>
               <p className={styles.cardText}>{section.description}</p>
               <span className={styles.cardMeta}>Открыть раздел</span>

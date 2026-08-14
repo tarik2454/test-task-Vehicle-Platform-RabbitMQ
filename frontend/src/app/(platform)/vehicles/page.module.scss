@@ -1,16 +1,11 @@
 .page {
-  min-height: 100vh;
-  padding: 40px 24px 64px;
   background:
-    radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 28%),
+    radial-gradient(
+      circle at top right,
+      rgba(16, 185, 129, 0.1),
+      transparent 28%
+    ),
     linear-gradient(180deg, #f8fafc 0%, #ecfeff 100%);
-}
-
-.container {
-  width: min(1040px, 100%);
-  margin: 0 auto;
-  display: grid;
-  gap: 24px;
 }
 
 .header {
@@ -172,10 +167,6 @@
 }
 
 @media (max-width: 640px) {
-  .page {
-    padding-inline: 16px;
-  }
-
   .card {
     padding: 18px;
   }

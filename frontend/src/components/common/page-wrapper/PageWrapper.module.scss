@@ -1,0 +1,10 @@
+.pageWrapper {
+  min-height: 100vh;
+  padding: 40px 24px 64px;
+}
+
+@media (max-width: 640px) {
+  .pageWrapper {
+    padding-inline: 16px;
+  }
+}

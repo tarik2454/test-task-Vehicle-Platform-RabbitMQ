@@ -1,14 +1,5 @@
 .page {
-  min-height: 100vh;
-  padding: 40px 24px 64px;
   background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-}
-
-.container {
-  width: min(1040px, 100%);
-  margin: 0 auto;
-  display: grid;
-  gap: 24px;
 }
 
 .header {
@@ -173,10 +164,6 @@
 }
 
 @media (max-width: 640px) {
-  .page {
-    padding-inline: 16px;
-  }
-
   .card {
     padding: 18px;
   }

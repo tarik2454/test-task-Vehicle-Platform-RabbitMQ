@@ -18,7 +18,7 @@ export async function createUser(payload: CreateUserInput): Promise<User> {
 
 export async function updateUser(
   id: number,
-  payload: Partial<User>
+  payload: Partial<User>,
 ): Promise<User> {
   return userRequest<User>(`/users/${id}`, {
     method: "PUT",
