@@ -87,7 +87,7 @@ export default function UsersPage() {
   }
 
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <PageWrapper>
         <Container>
           <header className={styles.header}>
@@ -200,6 +200,6 @@ export default function UsersPage() {
           </section>{" "}
         </Container>
       </PageWrapper>
-    </main>
+    </div>
   );
 }

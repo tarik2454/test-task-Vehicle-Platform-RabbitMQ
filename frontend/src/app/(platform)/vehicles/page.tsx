@@ -113,7 +113,7 @@ export default function VehiclesPage() {
   }
 
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <PageWrapper>
         <Container>
           <div className={styles.container}>
@@ -263,6 +263,6 @@ export default function VehiclesPage() {
           </div>
         </Container>
       </PageWrapper>
-    </main>
+    </div>
   );
 }
