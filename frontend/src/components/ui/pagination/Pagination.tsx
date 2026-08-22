@@ -57,7 +57,10 @@ export function Pagination({
           <button
             key={page}
             type="button"
-            className={cx(styles.pageButton, page === currentPage && styles.pageButtonActive)}
+            className={cx(
+              styles.pageButton,
+              page === currentPage && styles.pageButtonActive
+            )}
             onClick={() => onPageChange(page)}
             aria-current={page === currentPage ? 'page' : undefined}
           >

@@ -53,7 +53,11 @@ export const AutoTable = <TRow,>({
             {columns.map((column) => (
               <th
                 key={column.key}
-                className={cx(styles.autoTableHeaderCell, column.className, column.headerClassName)}
+                className={cx(
+                  styles.autoTableHeaderCell,
+                  column.className,
+                  column.headerClassName
+                )}
                 scope="col"
               >
                 {column.header}
@@ -64,13 +68,19 @@ export const AutoTable = <TRow,>({
         <tbody>
           {loading ? (
             <tr>
-              <td className={styles.autoTableStateCell} colSpan={columns.length}>
+              <td
+                className={styles.autoTableStateCell}
+                colSpan={columns.length}
+              >
                 Loading...
               </td>
             </tr>
           ) : rows.length === 0 ? (
             <tr>
-              <td className={styles.autoTableStateCell} colSpan={columns.length}>
+              <td
+                className={styles.autoTableStateCell}
+                colSpan={columns.length}
+              >
                 {emptyContent}
               </td>
             </tr>
@@ -78,13 +88,20 @@ export const AutoTable = <TRow,>({
             rows.map((row, index) => (
               <tr
                 key={getRowKey(row, index)}
-                className={cx(styles.autoTableRow, onRowClick && styles.autoTableRowClickable)}
+                className={cx(
+                  styles.autoTableRow,
+                  onRowClick && styles.autoTableRowClickable
+                )}
                 onClick={() => onRowClick?.(row)}
               >
                 {columns.map((column) => (
                   <td
                     key={column.key}
-                    className={cx(styles.autoTableCell, column.className, column.cellClassName)}
+                    className={cx(
+                      styles.autoTableCell,
+                      column.className,
+                      column.cellClassName
+                    )}
                   >
                     {column.render(row)}
                   </td>

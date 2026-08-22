@@ -9,14 +9,19 @@ export async function getVehicleById(id: number): Promise<Vehicle> {
   return vehicleRequest<Vehicle>(`/vehicles/${id}`);
 }
 
-export async function createVehicle(payload: CreateVehicleInput): Promise<Vehicle> {
+export async function createVehicle(
+  payload: CreateVehicleInput
+): Promise<Vehicle> {
   return vehicleRequest<Vehicle>('/vehicles', {
     method: 'POST',
     body: payload,
   });
 }
 
-export async function updateVehicle(id: number, payload: Partial<Vehicle>): Promise<Vehicle> {
+export async function updateVehicle(
+  id: number,
+  payload: Partial<Vehicle>
+): Promise<Vehicle> {
   return vehicleRequest<Vehicle>(`/vehicles/${id}`, {
     method: 'PUT',
     body: payload,

@@ -39,7 +39,9 @@ export default function UsersPage() {
       setUsers(nextUsers);
     } catch (loadError) {
       setError(
-        loadError instanceof Error ? loadError.message : 'Не удалось загрузить пользователей.'
+        loadError instanceof Error
+          ? loadError.message
+          : 'Не удалось загрузить пользователей.'
       );
     } finally {
       setIsLoading(false);
@@ -60,7 +62,9 @@ export default function UsersPage() {
       await loadUsers();
     } catch (submitError) {
       setError(
-        submitError instanceof Error ? submitError.message : 'Не удалось создать пользователя.'
+        submitError instanceof Error
+          ? submitError.message
+          : 'Не удалось создать пользователя.'
       );
     } finally {
       setIsSubmitting(false);
@@ -75,7 +79,9 @@ export default function UsersPage() {
       await loadUsers();
     } catch (deleteError) {
       setError(
-        deleteError instanceof Error ? deleteError.message : 'Не удалось удалить пользователя.'
+        deleteError instanceof Error
+          ? deleteError.message
+          : 'Не удалось удалить пользователя.'
       );
     }
   }
@@ -86,8 +92,8 @@ export default function UsersPage() {
         <header className={styles.header}>
           <h1 className={styles.title}>Пользователи</h1>
           <p className={styles.subtitle}>
-            Минимальная страница со SCSS-модулем: можно создать пользователя, просмотреть список и
-            удалить лишнюю запись.
+            Минимальная страница со SCSS-модулем: можно создать пользователя,
+            просмотреть список и удалить лишнюю запись.
           </p>
         </header>
         <section className={styles.card}>
@@ -146,7 +152,9 @@ export default function UsersPage() {
               </button>
             </div>
           </form>
-          {error ? <p className={`${styles.status} ${styles.statusError}`}>{error}</p> : null}
+          {error ? (
+            <p className={`${styles.status} ${styles.statusError}`}>{error}</p>
+          ) : null}
         </section>
         <section className={styles.card}>
           <h2 className={styles.sectionTitle}>Список пользователей</h2>
