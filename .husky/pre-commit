@@ -2,15 +2,15 @@
 
 set -e
 
-echo "Running root pre-commit checks..."
+echo "[root] Running pre-commit checks..."
 
-echo "Running frontend checks..."
+echo "[frontend] Running checks..."
 sh frontend/.husky/pre-commit
 
-echo "Running user-service checks..."
+echo "[user-service] Running checks..."
 sh user-service/.husky/pre-commit
 
-echo "Running vehicle-service checks..."
+echo "[vehicle-service] Running checks..."
 sh vehicle-service/.husky/pre-commit
 
-echo "All pre-commit checks passed!"
+echo "[root] All pre-commit checks passed!"
