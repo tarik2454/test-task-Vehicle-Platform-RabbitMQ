@@ -3,5 +3,8 @@ set -e
 
 cd vehicle-service
 
+echo "Running vehicle-service lint-staged..."
+npx lint-staged
+
 echo "Running vehicle-service build..."
 npm run build

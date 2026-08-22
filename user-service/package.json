@@ -53,8 +53,11 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.0",
+    "lint-staged": "^17.3.0",
     "prettier": "^3.4.2",
+    "prettier-plugin-sql": "^0.20.0",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
@@ -64,6 +67,15 @@
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.20.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "jest": {
     "moduleFileExtensions": [

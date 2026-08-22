@@ -3,5 +3,8 @@ set -e
 
 cd user-service
 
+echo "Running user-service lint-staged..."
+npx lint-staged
+
 echo "Running user-service build..."
 npm run build

@@ -1,0 +1,5 @@
+# Generated or vendored — never reformat these
+package-lock.json
+dist
+libs/common/src/prisma/.generated
+ERD.md
