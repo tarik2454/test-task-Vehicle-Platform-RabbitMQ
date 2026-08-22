@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+
+cd vehicle-service
+
+echo "Running vehicle-service build..."
+npm run build

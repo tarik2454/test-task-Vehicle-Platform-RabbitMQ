@@ -1,18 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect, useState, type SubmitEvent } from "react";
+import { useEffect, useState, type SubmitEvent } from 'react';
 
-import { getUsers } from "@/src/server/users";
-import {
-  createVehicle,
-  deleteVehicle,
-  getVehicles,
-} from "@/src/server/vehicles";
-import type { User, Vehicle } from "@/src/types";
+import { getUsers } from '@/src/server/users';
+import { createVehicle, deleteVehicle, getVehicles } from '@/src/server/vehicles';
+import type { User, Vehicle } from '@/src/types';
 
-import styles from "./page.module.scss";
-import { PageWrapper } from "@/src/components/common/page-wrapper";
-import { Container } from "@/src/components/common/container";
+import styles from './page.module.scss';
+import { PageWrapper } from '@/src/components/common/page-wrapper';
+import { Container } from '@/src/components/common/container';
 
 type VehicleFormState = {
   make: string;
@@ -22,10 +18,10 @@ type VehicleFormState = {
 };
 
 const initialFormState: VehicleFormState = {
-  make: "",
-  model: "",
-  year: "",
-  userId: "",
+  make: '',
+  model: '',
+  year: '',
+  userId: '',
 };
 
 export default function VehiclesPage() {
@@ -45,19 +41,12 @@ export default function VehiclesPage() {
     setIsLoading(true);
 
     try {
-      const [nextVehicles, nextUsers] = await Promise.all([
-        getVehicles(),
-        getUsers(),
-      ]);
+      const [nextVehicles, nextUsers] = await Promise.all([getVehicles(), getUsers()]);
 
       setVehicles(nextVehicles);
       setUsers(nextUsers);
     } catch (loadError) {
-      setError(
-        loadError instanceof Error
-          ? loadError.message
-          : "Не удалось загрузить транспорт.",
-      );
+      setError(loadError instanceof Error ? loadError.message : 'Не удалось загрузить транспорт.');
     } finally {
       setIsLoading(false);
     }
@@ -78,11 +67,7 @@ export default function VehiclesPage() {
       setForm(initialFormState);
       await loadData();
     } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Не удалось создать машину.",
-      );
+      setError(submitError instanceof Error ? submitError.message : 'Не удалось создать машину.');
     } finally {
       setIsSubmitting(false);
     }
@@ -95,11 +80,7 @@ export default function VehiclesPage() {
       await deleteVehicle(vehicleId);
       await loadData();
     } catch (deleteError) {
-      setError(
-        deleteError instanceof Error
-          ? deleteError.message
-          : "Не удалось удалить машину.",
-      );
+      setError(deleteError instanceof Error ? deleteError.message : 'Не удалось удалить машину.');
     }
   }
 
@@ -119,8 +100,8 @@ export default function VehiclesPage() {
           <header className={styles.header}>
             <h1 className={styles.title}>Машины</h1>
             <p className={styles.subtitle}>
-              Страница оформлена через SCSS-модуль и использует минимальную
-              форму, чтобы добавить транспорт и увидеть связь с пользователем.
+              Страница оформлена через SCSS-модуль и использует минимальную форму, чтобы добавить
+              транспорт и увидеть связь с пользователем.
             </p>
           </header>
 
@@ -205,15 +186,11 @@ export default function VehiclesPage() {
                   className={`${styles.button} ${styles.buttonPrimary}`}
                   disabled={isSubmitting || users.length === 0}
                 >
-                  {isSubmitting ? "Сохраняем..." : "Создать машину"}
+                  {isSubmitting ? 'Сохраняем...' : 'Создать машину'}
                 </button>
               </div>
             </form>
-            {error ? (
-              <p className={`${styles.status} ${styles.statusError}`}>
-                {error}
-              </p>
-            ) : null}
+            {error ? <p className={`${styles.status} ${styles.statusError}`}>{error}</p> : null}
           </section>
 
           <section className={styles.card}>
@@ -241,7 +218,7 @@ export default function VehiclesPage() {
                         <td>{vehicle.id}</td>
                         <td>{vehicle.make}</td>
                         <td>{vehicle.model}</td>
-                        <td>{vehicle.year ?? "—"}</td>
+                        <td>{vehicle.year ?? '—'}</td>
                         <td>{getUserLabel(vehicle.userId)}</td>
                         <td>
                           <button

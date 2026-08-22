@@ -1,21 +1,21 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import styles from "./page.module.scss";
-import { PageWrapper } from "@/src/components/common/page-wrapper";
-import { Container } from "@/src/components/common/container";
+import styles from './page.module.scss';
+import { PageWrapper } from '@/src/components/common/page-wrapper';
+import { Container } from '@/src/components/common/container';
 
 const sections = [
   {
-    href: "/users",
-    title: "Пользователи",
+    href: '/users',
+    title: 'Пользователи',
     description:
-      "Создавайте пользователей и быстро просматривайте список доступных записей.",
+      'Создавайте пользователей и быстро просматривайте список доступных записей.',
   },
   {
-    href: "/vehicles",
-    title: "Машины",
+    href: '/vehicles',
+    title: 'Машины',
     description:
-      "Добавляйте транспорт и проверяйте, как он связан с созданными пользователями.",
+      'Добавляйте транспорт и проверяйте, как он связан с созданными пользователями.',
   },
 ] as const;
 

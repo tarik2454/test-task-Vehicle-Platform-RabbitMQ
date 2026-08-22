@@ -1,5 +1,5 @@
 function getHost() {
-  return typeof window !== "undefined" ? window.location.hostname : "localhost";
+  return typeof window !== 'undefined' ? window.location.hostname : 'localhost';
 }
 
 function getBaseUrl(port: number) {
@@ -7,20 +7,20 @@ function getBaseUrl(port: number) {
 }
 
 type RequestOptions = {
-  method?: "GET" | "POST" | "PUT" | "DELETE";
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: unknown;
 };
 
 async function request<T>(
   port: number,
   path: string,
-  { method = "GET", body }: RequestOptions = {},
+  { method = 'GET', body }: RequestOptions = {}
 ): Promise<T> {
   const response = await fetch(`${getBaseUrl(port)}${path}`, {
     method,
-    headers: body ? { "Content-Type": "application/json" } : undefined,
+    headers: body ? { 'Content-Type': 'application/json' } : undefined,
     body: body ? JSON.stringify(body) : undefined,
-    cache: "no-store",
+    cache: 'no-store',
   });
 
   if (!response.ok) {

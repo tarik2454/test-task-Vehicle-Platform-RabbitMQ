@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+
+cd user-service
+
+echo "Running user-service build..."
+npm run build

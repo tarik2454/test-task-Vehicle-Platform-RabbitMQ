@@ -35,13 +35,16 @@ Good examples:
 
 ```md
 ## Summary
+
 - keep deleted inventory items inactive
 - block status edits for deleted items
 
 ## Why
+
 - deleted items could still appear active or be switched back from the editor
 
 ## Checks
+
 - npm run type-check
 - commit hook build
 ```

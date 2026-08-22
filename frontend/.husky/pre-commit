@@ -1,4 +1,8 @@
+#!/bin/sh
 
+set -e
+
+cd frontend
 
 echo "🔍 Running lint-staged..."
 npx lint-staged
