@@ -2,7 +2,8 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --no-audit --no-fund && npm cache clean --force
+COPY .husky/install.mjs ./.husky/install.mjs
+RUN HUSKY=0 npm ci --no-audit --no-fund && npm cache clean --force
 
 COPY . .
 

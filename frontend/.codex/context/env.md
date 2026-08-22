@@ -1,17 +1,25 @@
-# Environment
+# Frontend Environment
 
-## Frontend
+## Runtime Addresses
 
-- Local env file: `frontend/.env`
-- Current local frontend port: `3000`
-- Frontend API helper code derives the hostname from `window.location.hostname`
+- Frontend: `http://localhost:3000`
+- User API: browser hostname on port `4001`
+- Vehicle API: browser hostname on port `4002`
 
-## API Usage
+## Current API Resolution
 
-- Users API port referenced by the frontend helper layer: `4001`
-- Vehicles API port referenced by the frontend helper layer: `4002`
+`src/server/index.ts` derives the hostname from `window.location.hostname` in
+the browser and falls back to `localhost` during server-side execution. The user
+and vehicle ports are currently fixed in that module.
 
-## Rules
+The frontend does not currently read public API URL environment variables. Do
+not document or introduce an unused variable as if it were active.
 
-- Keep documented env and runtime assumptions aligned with actual frontend code.
-- When ports or host assumptions change, update `.codex/context/commands.md` and `.codex/context/env.md`.
+## Docker
+
+Docker Compose publishes the frontend on port `3000` and the backend APIs on
+ports `4001` and `4002`. The frontend container starts after both backend
+containers have started, but Compose does not currently wait for backend HTTP
+health checks.
+
+Never commit `frontend/.env` or add real credentials to `.codex`.

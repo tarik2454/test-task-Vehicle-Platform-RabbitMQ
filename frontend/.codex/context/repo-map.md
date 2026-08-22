@@ -1,36 +1,40 @@
-# Repo Map
+# Frontend Repository Map
 
 ## Stack
 
-- Next.js 16
-- React 19
-- TypeScript
+- Next.js `16.3.0`
+- React `19.2.8`
+- TypeScript 5
 - Tailwind CSS 4
-- Sass modules
+- Sass and SCSS modules
+- ESLint 9
+- Prettier 3
 
-## Root
+## Root Files
 
-- `app/` - active Next.js app-router surface
-- `public/` - static assets
-- `.codex/` - local frontend context
-- `package.json` - frontend scripts and dependencies
-- `next.config.ts` - Next.js config
-- `tsconfig.json` - TypeScript config
+- `AGENTS.md` - frontend instruction entrypoint and context-loading policy.
+- `.codex/` - detailed frontend context, mandatory rules, and generated local
+  environment metadata.
+- `.agents/skills/` - discoverable frontend Git and pull request workflows.
+- `package.json` - scripts, dependencies, and lint-staged configuration.
+- `next.config.ts` - Next.js configuration.
+- `tsconfig.json` - TypeScript configuration and `@/*` path alias.
+- `eslint.config.mjs` - Next.js and TypeScript ESLint configuration.
+- `postcss.config.mjs` - Tailwind PostCSS integration.
+- `.prettierrc` and `.prettierignore` - formatting configuration.
+- `Dockerfile` - frontend container image.
 
-## App Surface
+## Source Tree
 
-- `app/layout.tsx` - root layout
-- `app/page.tsx` - home page
-- `app/(platform)/users/page.tsx` - users page
-- `app/(platform)/vehicles/page.tsx` - vehicles page
-- `app/server/` - frontend-side API helper layer
-- `app/styles/globals.css` - global styles
+- `src/app/` - App Router routes, layouts, and error boundaries.
+- `src/components/common/` - shared container and page wrapper.
+- `src/components/ui/` - reusable table and pagination UI.
+- `src/server/` - HTTP request layer for backend services.
+- `src/styles/` - global styles.
+- `src/types/` - shared frontend data types.
+- `public/` - static assets.
 
-## Legacy Surface
+## Path Alias
 
-- `src/` - older frontend files kept in the repo; verify usage before editing or deleting
-
-## Notes
-
-- The active work is centered around `app/`.
-- SCSS modules are used in current pages and require `sass`.
+`@/*` resolves from the frontend package root, so current imports use paths such
+as `@/src/server/users` and `@/src/components/common/container`.

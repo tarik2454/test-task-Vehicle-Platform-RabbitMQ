@@ -8,71 +8,61 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# AGENTS.md
+# Frontend Instructions
 
-Project documentation for local development is stored in `.codex/`.
+This file is the self-contained entrypoint for work inside `frontend/`. All
+frontend-specific agent configuration lives in this file, `.codex/`, and
+`.agents/` so the directory can move to a standalone repository without relying
+on instructions from its current parent repository.
 
-## Structure
+## Required Reading
 
-- `.codex/context/repo-map.md` - a short map of the frontend app and its main directories.
-- `.codex/context/commands.md` - frontend development commands, environment notes, and useful links.
-- `.codex/context/team-guidelines.md` - frontend collaboration, SSOT, branch, and commit rules.
-- `.codex/rules/critical-rules.md` - important local frontend rules and constraints.
-- `.codex/skills/local-commits/SKILL.md` - local skill for branch names and commit messages.
-- `.codex/skills/local-prs/SKILL.md` - local skill for PR titles and PR bodies.
+- Before every frontend task, read `.codex/rules/critical-rules.md` and
+  `.codex/context/checklist.md`.
+- Read only the additional context files relevant to the task: repository and
+  domain maps for ownership, commands for verification, environment and
+  integrations for runtime or API work, and team guidelines for shared changes.
+- Treat current source, package scripts, and configuration as authoritative when
+  a context file is stale, then update the stale context in the same change.
 
-## Principles
+## Context Map
 
-- Keep frontend-only links, notes, and project context in `frontend/.codex/`.
-- Use `.codex` as the primary source of frontend-specific context and update it when new stable, useful frontend information appears.
-- Keep `.codex` aligned with the actual `frontend/` app, not with backend services or unrelated repo areas.
-- Treat `AGENTS.md` as the short entrypoint and `.codex/` as the detailed frontend knowledge base.
-- Do not add secrets, tokens, or private keys to Markdown files.
-- If new useful development information appears, update the appropriate file in `.codex/`.
-- Use `.codex/context/team-guidelines.md` for team ownership and collaboration rules.
+- `.codex/context/repo-map.md` - stack and source tree.
+- `.codex/context/domain-map.md` - current product areas and ownership.
+- `.codex/context/commands.md` - development and quality commands.
+- `.codex/context/env.md` - ports and runtime assumptions.
+- `.codex/context/integrations.md` - HTTP API integration details.
+- `.codex/context/checklist.md` - task workflow.
+- `.codex/context/team-guidelines.md` - collaboration and Git conventions.
+- `.codex/rules/critical-rules.md` - mandatory frontend rules.
+- `.agents/skills/vehicle-platform-frontend-commits/SKILL.md` - branch and
+  commit naming.
+- `.agents/skills/vehicle-platform-frontend-prs/SKILL.md` - pull request
+  guidance.
 
-## Current Project Scope
+## Project Scope
 
-- This local context is only for the `frontend/` app.
-- The active frontend uses Next.js app router under `app/`, but the folder also contains older `src/` files that should be treated as legacy until verified otherwise.
-- Do not document backend services, databases, queues, or repo-wide infrastructure here unless it directly affects frontend runtime or API usage.
+- Next.js 16 App Router and React 19.
+- TypeScript with strict checking.
+- Tailwind CSS 4 plus SCSS modules.
+- Active application code lives under `src/`.
+- The UI manages users and vehicles through two independent backend APIs.
 
-## Contract-First Rule
+## Ownership Boundaries
 
-For tasks involving external integrations or contracts, do not guess.
+- Keep routes and layouts under `src/app/`.
+- Keep reusable UI under `src/components/`.
+- Keep service requests in `src/server/` and shared data shapes in `src/types/`.
+- Do not scatter backend URLs, ports, or raw fetch logic through components.
+- Before changing a request or response shape, inspect the matching backend DTO,
+  controller, service response, frontend type, request helper, and UI consumer.
+- Use the task checklist for verification; scale checks to the files and behavior
+  changed.
 
-This includes:
+## Context Hygiene
 
-- frontend API request and response fields
-- framework and library integration points
-- SDK and library integration points
-- page params, query params, headers, and payload shapes
-- third-party frontend configuration
-
-Required verification order:
-
-1. Check local frontend code, types, and existing usage.
-2. Verify the external contract in the relevant documentation or current source.
-3. Only then implement the minimal necessary change.
-
-Do not add speculative fallback fields or extra payload keys unless verified by docs or real API responses.
-Do not use speculative API or integration fixes when the contract is unclear.
-
-## Team Coordination Rule
-
-- Before large or architectural frontend changes, check `.codex/context/team-guidelines.md`.
-- Keep fixes SSOT-oriented: fix the root component, helper, style layer, or page wrapper rather than duplicating logic across screens.
-
-## Frontend Change Rule
-
-Before changing navigation, layouts, shared providers, route groups, styling infrastructure, or common UI primitives:
-
-1. Check whether the code lives in the active `app/` surface or older `src/` legacy surface.
-2. Confirm whether there is a route-specific layout or wrapper that is safer to change.
-3. Prefer the narrowest frontend surface that solves the issue without altering unrelated pages.
-
-## Local Context Hygiene
-
-- Keep `.codex` concise and frontend-only.
-- Prefer durable frontend facts over temporary debugging notes.
-- When a local note becomes outdated, update or delete it instead of letting conflicting guidance accumulate.
+- Keep `.codex` and the frontend skills frontend-only and aligned with current
+  source and package scripts.
+- Prefer durable facts over temporary debugging notes.
+- Remove obsolete context instead of keeping conflicting instructions.
+- Never add secrets, `.env` contents, private keys, or credentials.

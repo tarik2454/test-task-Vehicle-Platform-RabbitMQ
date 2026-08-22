@@ -1,32 +1,26 @@
-# Team Guidelines
+# Frontend Team Guidelines
 
 ## Collaboration
 
-- Treat this local context as frontend-only.
-- For broad changes, identify the frontend source of truth first: `app/`, styles, config, or frontend API helpers.
-- If docs disagree with frontend code, document the mismatch instead of assuming the docs are correct.
+- No code owners are documented for this project. Inspect current consumers and
+  recent history before broad changes to shared modules.
+- Keep one source of truth for API calls, types, shared layout behavior, and
+  reusable UI.
+- If documentation conflicts with current source or package scripts, treat the
+  code as authoritative and update the documentation.
 
-## Single Source Of Truth
+## Git
 
-- Do not patch the same behavior separately across multiple pages if a shared frontend fix is enough.
-- If a fix needs copied logic, extract or centralize the shared behavior.
-- If a frontend contract changes, update helper code, local types, and affected pages together.
+- Keep each commit focused on one coherent result.
+- Use the Vehicle Platform frontend commit skill for branch and commit naming.
+- Use lowercase ASCII branch names and avoid hidden or mixed-script characters.
+- Do not assume a task ID workflow, PR base branch, or external automation unless
+  the user provides one.
 
-## Git Freshness
+## Change Scope
 
-- Start work by checking recent history before creating follow-up changes.
-
-## Branch Names
-
-Use short kebab-case branch names:
-
-```text
-type/short-description
-```
-
-Examples:
-
-- `feature/users-page`
-- `bugfix/homepage-build-error`
-- `refactor/app-server-helpers`
-- `docs/update-codex-context`
+- Route-specific changes should remain in the narrowest route subtree possible.
+- Shared component changes require checking every current consumer.
+- API contract changes require checking request helpers, frontend types, pages,
+  and the owning backend service together.
+- Styling changes should avoid unrelated full-project reformatting.

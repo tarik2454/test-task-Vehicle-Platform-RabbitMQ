@@ -1,22 +1,41 @@
-# Commands
+# Frontend Commands
 
-## Dev
+Run commands from `frontend/` unless noted otherwise.
 
-- `cd frontend && npm run dev`
-- `cd frontend && npm run build`
-- `cd frontend && npm run start`
-- `cd frontend && npm run lint`
-- `cd frontend && npx tsc --noEmit`
+## Development
 
-## Notes
+- Install exact dependencies: `npm ci`
+- Start development server: `npm run dev`
+- Create production build: `npm run build`
+- Start production server: `npm run start`
 
-- Standard local frontend URL: `http://localhost:3000`
-- Recent history: `git log -n 3 --oneline --stat -- frontend`
-- Branch format: `type/short-description`
-- Commit format: `type(scope): short imperative summary`
+## Quality
 
-## Current Caveats
+- Check ESLint: `npm run lint`
+- Apply ESLint fixes: `npm run lint:fix`
+- Check TypeScript without output: `npm run type-check`
+- Check formatting: `npm run format:check`
+- Apply formatting: `npm run format`
 
-- `app/` is the active Next.js surface.
-- `src/` still exists and may contain stale or legacy code.
-- SCSS modules require `sass` in `package.json`.
+## Pre-commit
+
+The frontend hook is normally delegated by the repository root hook. To run it
+directly, execute this from the repository root:
+
+`sh frontend/.husky/pre-commit`
+
+It runs lint-staged for staged frontend files and then checks the complete
+TypeScript project.
+
+## Docker
+
+From the repository root:
+
+- Complete stack: `docker compose up --build`
+- Frontend logs: `docker compose logs -f frontend`
+- Stop stack: `docker compose down`
+
+The frontend image installs dependencies with `HUSKY=0`, so Docker does not try
+to configure Git hooks while preserving other npm lifecycle scripts.
+
+Local frontend URL: `http://localhost:3000`.

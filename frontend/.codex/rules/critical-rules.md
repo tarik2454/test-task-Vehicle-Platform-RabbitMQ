@@ -1,25 +1,35 @@
-# Critical Rules
+# Frontend Critical Rules
 
-## Scope
+## Architecture
 
-- Keep this local context frontend-only.
-- Do not mix backend, database, queue, or repo-wide infrastructure notes into `frontend/.codex/` unless they directly affect frontend runtime.
+- Treat `src/app/` as the active Next.js App Router tree.
+- Do not create a second root-level `app/`, `components/`, or `server/` tree.
+- Keep backend host and port resolution centralized in `src/server/index.ts`.
+- Keep user and vehicle request functions in their owning server modules.
+- Do not change frontend contracts without checking the matching backend DTO and
+  response shape.
 
-## Workflow
+## React And TypeScript
 
-- Check recent frontend history before broad changes.
-- Prefer `git log -n 3 --oneline --stat -- frontend`.
-- If code and older notes disagree, prefer the current `frontend/` code and config.
+- Keep `'use client'` limited to components that need browser behavior.
+- Use clear loading, empty, error, and submitting states.
+- Prefer early returns for whole-render states and boolean guards for local JSX
+  branches when they improve readability.
+- Avoid unsafe types and speculative response fields.
 
-## Conventions
+## Styling And Formatting
 
-- Use `.codex/skills/local-commits/SKILL.md` for branch and commit naming guidance.
-- Keep one logical action per commit.
-- Prefer SSOT fixes over duplicated page, helper, or style logic.
-- Before removing files, verify whether the active surface is `app/` or legacy `src/`.
+- Keep SCSS modules colocated with their route or component.
+- Keep global styles in `src/styles/globals.css`.
+- Keep both `prettier-plugin-css-order` and `prettier-plugin-tailwindcss`
+  loadable when changing Prettier configuration.
+- Avoid broad formatting changes during focused work.
 
-## Verification
+## Safety
 
-- Prefer `cd frontend && npm run lint`.
-- Use `cd frontend && npm run build` when routes, styling, or app-router files change.
-- Call out frontend env or Docker limitations in verification notes when relevant.
+- Do not commit `.env`, PEM files, secrets, caches, `node_modules`, build output,
+  or `*.tsbuildinfo` files.
+- Do not edit generated `.next/`, `next-env.d.ts`, or `.eslintcache` files.
+- Treat `.codex/environments/environment.toml` as generated configuration; do
+  not maintain it manually.
+- Preserve unrelated user changes.

@@ -9,7 +9,35 @@ Use this skill before suggesting, creating, or validating a branch name or commi
 
 ## Branch Names
 
-Branch format:
+For Rewardom task work linked to Notion, branch format:
+
+```text
+REW-15
+```
+
+Rules:
+
+- Use the exact task ID from Notion, for example `REW-15`.
+- The task ID must be the whole branch name for task-linked work.
+- Use ASCII-only branch names.
+- Do not add a type prefix or extra description for task-linked branches unless the team changes the guideline.
+- Do not use hidden characters, Cyrillic lookalikes, or mixed-script branch names.
+
+Good examples:
+
+- `REW-15`
+- `REW-3`
+- `REW-40`
+
+Avoid:
+
+- `bugfix/rew-15-giveaway-entry-state`
+- `bugfix/refer-friend`
+- `bugfix/кefer-friend`
+- `rew-15`
+- `REW15`
+
+For non-task work not tied to a Notion card, branch format:
 
 ```text
 type/short-kebab-description
@@ -29,22 +57,8 @@ Rules:
 - Use kebab-case after the slash.
 - Keep the description short, usually 2-4 words.
 - Make the name describe the work, not the implementation detail.
+- Do not use hidden characters, Cyrillic lookalikes, or mixed-script branch names.
 - If the app-level branch prefix is required by the tool, prepend it without changing the team branch body.
-
-Good examples:
-
-- `bugfix/product-visibility-filter`
-- `fix/support-ticket-layout`
-- `feature/creator-products`
-- `refactor/reward-mappers`
-- `docs/update-codex-context`
-
-Avoid:
-
-- `fix`
-- `bugFix/ProductModal`
-- `taras-changes`
-- `feature/update`
 
 ## Commit Messages
 
@@ -76,10 +90,10 @@ Rules:
 
 Good examples:
 
-- `fix(creators): repair product visibility filter`
-- `fix(dashboard): stretch support ticket items`
+- `fix(giveaways): repair entry state`
+- `fix(auth): improve form layout`
 - `docs(codex): update team guidelines`
-- `refactor(rewards): share payout mapper`
+- `refactor(api): share request handling`
 - `chore(codex): refresh local codex context`
 
 Avoid:
@@ -95,7 +109,8 @@ Avoid:
 
 Before finalizing:
 
-- Confirm the branch name matches the type and kebab-case rules.
+- Confirm that task-linked branches use the exact `REW-XX` ID from Notion.
+- Confirm that non-task branches match the `type/short-description` kebab-case rules.
 - Confirm the commit type matches the change.
 - Confirm the scope is a real app/domain area.
 - Confirm the message describes the outcome, not only the files changed.
