@@ -1,8 +1,8 @@
 .autoTableRoot {
   display: flex;
-  min-height: 0;
   flex: 1;
   flex-direction: column;
+  min-height: 0;
   overflow: hidden;
   border: 1px solid #27272a;
   border-radius: 14px;
@@ -11,34 +11,34 @@
 }
 
 .autoTableScroll {
-  min-height: 0;
   flex: 1;
+  min-height: 0;
   overflow: auto;
 }
 
 .autoTable {
   display: table;
   width: 100%;
-  table-layout: auto;
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 .autoTableHead {
+  z-index: 1;
   position: sticky;
   top: 0;
-  z-index: 1;
 }
 
 .autoTableHeaderCell {
   padding: 10px 20px;
   background: #27272a;
   color: #a1a1aa;
-  font-size: 12px;
   font-weight: 700;
+  font-size: 12px;
   line-height: 16px;
+  letter-spacing: 0.02em;
   text-align: left;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
@@ -46,8 +46,8 @@
   padding: 12px 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   color: #f4f4f5;
-  font-size: 14px;
   font-weight: 500;
+  font-size: 14px;
   line-height: 1.35;
   vertical-align: middle;
 }

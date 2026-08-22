@@ -9,29 +9,29 @@
 
 .title {
   margin: 0;
-  font-size: clamp(1.9rem, 4vw, 2.8rem);
   color: #0f172a;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
 }
 
 .subtitle {
-  margin: 0;
   max-width: 620px;
-  line-height: 1.65;
+  margin: 0;
   color: #475569;
+  line-height: 1.65;
 }
 
 .card {
   padding: 24px;
-  border-radius: 24px;
   border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
 }
 
 .sectionTitle {
   margin: 0 0 18px;
-  font-size: 1.2rem;
   color: #0f172a;
+  font-size: 1.2rem;
 }
 
 .form {
@@ -51,9 +51,9 @@
 }
 
 .label {
-  font-size: 0.95rem;
-  font-weight: 600;
   color: #334155;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .input {
@@ -70,8 +70,8 @@
 }
 
 .input:focus {
-  outline: none;
   border-color: #2563eb;
+  outline: none;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
@@ -100,25 +100,25 @@
 }
 
 .buttonPrimary {
-  color: #fff;
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
 }
 
 .buttonSecondary {
-  color: #0f172a;
   background: #e2e8f0;
+  color: #0f172a;
 }
 
 .buttonDanger {
-  color: #fff;
   background: #dc2626;
+  color: #fff;
 }
 
 .status {
   margin: 0;
+  color: #475569;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: #475569;
 }
 
 .statusError {
@@ -127,8 +127,8 @@
 
 .tableWrap {
   overflow: hidden;
-  border-radius: 18px;
   border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 18px;
 }
 
 .table {
@@ -140,16 +140,16 @@
 .table th,
 .table td {
   padding: 14px 16px;
-  text-align: left;
   border-bottom: 1px solid #e2e8f0;
+  text-align: left;
 }
 
 .table th {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #475569;
   background: #f8fafc;
+  color: #475569;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .table td {
@@ -159,8 +159,8 @@
 .emptyState {
   margin: 0;
   padding: 24px;
-  text-align: center;
   color: #64748b;
+  text-align: center;
 }
 
 @media (max-width: 640px) {
