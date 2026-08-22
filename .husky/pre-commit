@@ -2,13 +2,15 @@
 
 set -e
 
-echo "Running frontend pre-commit..."
+echo "🏁 Running root pre-commit checks..."
+
+echo "🎨 Running frontend checks..."
 sh frontend/.husky/pre-commit
 
-echo "Running user-service pre-commit..."
+echo "👤 Running user-service checks..."
 sh user-service/.husky/pre-commit
 
-echo "Running vehicle-service pre-commit..."
+echo "🚗 Running vehicle-service checks..."
 sh vehicle-service/.husky/pre-commit
 
-echo "All pre-commit checks passed!"
+echo "✅ All pre-commit checks passed!"

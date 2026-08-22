@@ -4,10 +4,10 @@ set -e
 
 cd frontend
 
-echo "🔍 Running lint-staged..."
+echo "🎨 Frontend: 🔍 running lint-staged..."
 npx lint-staged
 
-echo "🧠 Running type check..."
+echo "🎨 Frontend: 🧠 running type check..."
 npm run type-check
 
-echo "✅ Pre-commit checks passed!"
+echo "🎨 Frontend: ✅ checks passed!"

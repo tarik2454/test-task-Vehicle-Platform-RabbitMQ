@@ -3,8 +3,10 @@ set -e
 
 cd user-service
 
-echo "Running user-service lint-staged..."
+echo "👤 User service: 🔍 running lint-staged..."
 npx lint-staged
 
-echo "Running user-service build..."
+echo "👤 User service: 🧠 running build..."
 npm run build
+
+echo "👤 User service: ✅ checks passed!"
