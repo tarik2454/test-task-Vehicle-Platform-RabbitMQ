@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+echo "Running frontend pre-commit..."
+sh frontend/.husky/pre-commit
+
+echo "Running user-service pre-commit..."
+sh user-service/.husky/pre-commit
+
+echo "Running vehicle-service pre-commit..."
+sh vehicle-service/.husky/pre-commit
+
+echo "All pre-commit checks passed!"
