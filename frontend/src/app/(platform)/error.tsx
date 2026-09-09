@@ -1,11 +1,11 @@
 'use client';
 
-type ErrorPageProps = {
+type TErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
 };
 
-export default function Error({ error, reset }: ErrorPageProps) {
+export default function Error({ error, reset }: TErrorPageProps) {
   return (
     <main
       style={{

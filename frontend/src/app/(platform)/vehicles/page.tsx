@@ -2,26 +2,26 @@
 
 import { useEffect, useState, type SubmitEvent } from 'react';
 
+import { Container } from '@/src/components/common/container';
+import { PageWrapper } from '@/src/components/common/page-wrapper';
 import { getUsers } from '@/src/server/users';
 import {
   createVehicle,
   deleteVehicle,
   getVehicles,
 } from '@/src/server/vehicles';
-import type { User, Vehicle } from '@/src/types';
+import type { TUser, TVehicle } from '@/src/types';
 
 import styles from './page.module.scss';
-import { PageWrapper } from '@/src/components/common/page-wrapper';
-import { Container } from '@/src/components/common/container';
 
-type VehicleFormState = {
+type TVehicleFormState = {
   make: string;
   model: string;
   year: string;
   userId: string;
 };
 
-const initialFormState: VehicleFormState = {
+const initialFormState: TVehicleFormState = {
   make: '',
   model: '',
   year: '',
@@ -29,16 +29,12 @@ const initialFormState: VehicleFormState = {
 };
 
 export default function VehiclesPage() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [form, setForm] = useState<VehicleFormState>(initialFormState);
+  const [vehicles, setVehicles] = useState<TVehicle[]>([]);
+  const [users, setUsers] = useState<TUser[]>([]);
+  const [form, setForm] = useState<TVehicleFormState>(initialFormState);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    void loadData();
-  }, []);
 
   async function loadData() {
     setError(null);
@@ -62,6 +58,10 @@ export default function VehiclesPage() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    void loadData();
+  }, []);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();

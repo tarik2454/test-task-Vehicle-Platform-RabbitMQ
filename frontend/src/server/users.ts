@@ -1,16 +1,17 @@
 import { userRequest } from '.';
-import type { CreateUserInput, User } from '../types';
 
-export async function getUsers(): Promise<User[]> {
-  return userRequest<User[]>('/users');
+import type { TCreateUserInput, TUser } from '../types';
+
+export async function getUsers(): Promise<TUser[]> {
+  return userRequest<TUser[]>('/users');
 }
 
-export async function getUserById(id: number): Promise<User> {
-  return userRequest<User>(`/users/${id}`);
+export async function getUserById(id: number): Promise<TUser> {
+  return userRequest<TUser>(`/users/${id}`);
 }
 
-export async function createUser(payload: CreateUserInput): Promise<User> {
-  return userRequest<User>('/users', {
+export async function createUser(payload: TCreateUserInput): Promise<TUser> {
+  return userRequest<TUser>('/users', {
     method: 'POST',
     body: payload,
   });
@@ -18,9 +19,9 @@ export async function createUser(payload: CreateUserInput): Promise<User> {
 
 export async function updateUser(
   id: number,
-  payload: Partial<User>
-): Promise<User> {
-  return userRequest<User>(`/users/${id}`, {
+  payload: Partial<TUser>
+): Promise<TUser> {
+  return userRequest<TUser>(`/users/${id}`, {
     method: 'PUT',
     body: payload,
   });

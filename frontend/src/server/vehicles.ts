@@ -1,18 +1,19 @@
 import { vehicleRequest } from '.';
-import type { CreateVehicleInput, Vehicle } from '../types';
 
-export async function getVehicles(): Promise<Vehicle[]> {
-  return vehicleRequest<Vehicle[]>('/vehicles');
+import type { TCreateVehicleInput, TVehicle } from '../types';
+
+export async function getVehicles(): Promise<TVehicle[]> {
+  return vehicleRequest<TVehicle[]>('/vehicles');
 }
 
-export async function getVehicleById(id: number): Promise<Vehicle> {
-  return vehicleRequest<Vehicle>(`/vehicles/${id}`);
+export async function getVehicleById(id: number): Promise<TVehicle> {
+  return vehicleRequest<TVehicle>(`/vehicles/${id}`);
 }
 
 export async function createVehicle(
-  payload: CreateVehicleInput
-): Promise<Vehicle> {
-  return vehicleRequest<Vehicle>('/vehicles', {
+  payload: TCreateVehicleInput
+): Promise<TVehicle> {
+  return vehicleRequest<TVehicle>('/vehicles', {
     method: 'POST',
     body: payload,
   });
@@ -20,9 +21,9 @@ export async function createVehicle(
 
 export async function updateVehicle(
   id: number,
-  payload: Partial<Vehicle>
-): Promise<Vehicle> {
-  return vehicleRequest<Vehicle>(`/vehicles/${id}`, {
+  payload: Partial<TVehicle>
+): Promise<TVehicle> {
+  return vehicleRequest<TVehicle>(`/vehicles/${id}`, {
     method: 'PUT',
     body: payload,
   });

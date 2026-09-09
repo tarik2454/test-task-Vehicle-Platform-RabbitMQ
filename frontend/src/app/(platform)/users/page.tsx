@@ -2,33 +2,29 @@
 
 import { useEffect, useState, type SubmitEvent } from 'react';
 
-import { createUser, deleteUser, getUsers } from '@/src/server/users';
-import type { User } from '@/src/types';
-
-import styles from './page.module.scss';
 import { Container } from '@/src/components/common/container';
 import { PageWrapper } from '@/src/components/common/page-wrapper';
+import { createUser, deleteUser, getUsers } from '@/src/server/users';
+import type { TUser } from '@/src/types';
 
-type UserFormState = {
+import styles from './page.module.scss';
+
+type TUserFormState = {
   email: string;
   name: string;
 };
 
-const initialFormState: UserFormState = {
+const initialFormState: TUserFormState = {
   email: '',
   name: '',
 };
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [form, setForm] = useState<UserFormState>(initialFormState);
+  const [users, setUsers] = useState<TUser[]>([]);
+  const [form, setForm] = useState<TUserFormState>(initialFormState);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    void loadUsers();
-  }, []);
 
   async function loadUsers() {
     setError(null);
@@ -47,6 +43,10 @@ export default function UsersPage() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    void loadUsers();
+  }, []);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();

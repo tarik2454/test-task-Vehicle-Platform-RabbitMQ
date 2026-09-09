@@ -6,7 +6,7 @@ function getBaseUrl(port: number) {
   return `http://${getHost()}:${port}`;
 }
 
-type RequestOptions = {
+type TRequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: unknown;
 };
@@ -14,7 +14,7 @@ type RequestOptions = {
 async function request<T>(
   port: number,
   path: string,
-  { method = 'GET', body }: RequestOptions = {}
+  { method = 'GET', body }: TRequestOptions = {}
 ): Promise<T> {
   const response = await fetch(`${getBaseUrl(port)}${path}`, {
     method,
@@ -31,8 +31,8 @@ async function request<T>(
   return response.json() as Promise<T>;
 }
 
-export const userRequest = <T>(path: string, options?: RequestOptions) =>
+export const userRequest = <T>(path: string, options?: TRequestOptions) =>
   request<T>(4001, path, options);
 
-export const vehicleRequest = <T>(path: string, options?: RequestOptions) =>
+export const vehicleRequest = <T>(path: string, options?: TRequestOptions) =>
   request<T>(4002, path, options);

@@ -1,11 +1,11 @@
-export type User = {
+export type TUser = {
   id: number;
   email: string;
   name: string;
   createdAt: string | Date;
 };
 
-export type Vehicle = {
+export type TVehicle = {
   id: number;
   make: string;
   model: string;
@@ -15,12 +15,12 @@ export type Vehicle = {
   updatedAt?: string | Date;
 };
 
-export type CreateUserInput = {
+export type TCreateUserInput = {
   email: string;
   name?: string;
 };
 
-export type CreateVehicleInput = {
+export type TCreateVehicleInput = {
   make?: string;
   model?: string;
   year?: number;
