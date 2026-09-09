@@ -4,6 +4,7 @@ out
 build
 dist
 coverage
+public
 
 package-lock.json
 pnpm-lock.yaml
@@ -14,5 +15,9 @@ yarn.lock
 !.env.example
 
 *.log
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 .eslintcache
+
+next-env.d.ts
+test-results
+playwright-report

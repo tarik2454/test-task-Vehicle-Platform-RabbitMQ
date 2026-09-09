@@ -10,5 +10,7 @@
   "endOfLine": "lf",
   "plugins": ["prettier-plugin-css-order", "prettier-plugin-tailwindcss"],
   "cssDeclarationSorterOrder": "smacss",
-  "cssDeclarationSorterKeepOverrides": false
+  "cssDeclarationSorterKeepOverrides": false,
+  "tailwindStylesheet": "./src/styles/globals.css",
+  "tailwindFunctions": ["clsx"]
 }
