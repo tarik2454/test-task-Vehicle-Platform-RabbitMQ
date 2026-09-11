@@ -3,9 +3,6 @@ import { VehicleModule } from './vehicle/vehicle.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env'] }),
-    VehicleModule,
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env'] }), VehicleModule],
 })
 export class AppModule {}
