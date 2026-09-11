@@ -2,7 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches: [main]
+    branches: [prod]
   workflow_dispatch:
     inputs:
       build_images:
@@ -14,7 +14,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 concurrency:
-  group: deploy-ec2-main
+  group: deploy-ec2-prod
   cancel-in-progress: false
 
 jobs:
@@ -143,9 +143,9 @@ jobs:
             git clone https://github.com/tarik2454/test-task-Vehicle-Platform-RabbitMQ.git .
           fi
 
-          # Sync code to latest main
-          git fetch origin main
-          git reset --hard origin/main
+          # Sync code to latest production branch
+          git fetch origin prod
+          git reset --hard origin/prod
 
           # Detect available compose command
           if sudo docker compose version >/dev/null 2>&1; then

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { db } from '../db';
 import { vehicles } from '../db/schema';
 import { eq, InferSelectModel, InferInsertModel } from 'drizzle-orm';
@@ -30,10 +26,7 @@ export class VehicleService {
       userId: dto.userId,
     };
 
-    const [vehicle] = await db
-      .insert(vehicles)
-      .values(insertValues)
-      .returning();
+    const [vehicle] = await db.insert(vehicles).values(insertValues).returning();
 
     return this.mapDbVehicle(vehicle);
   }
@@ -63,20 +56,15 @@ export class VehicleService {
       .where(eq(vehicles.id, id))
       .returning();
 
-    if (!updatedVehicles.length)
-      throw new NotFoundException('Vehicle not found');
+    if (!updatedVehicles.length) throw new NotFoundException('Vehicle not found');
 
     return this.mapDbVehicle(updatedVehicles[0]);
   }
 
   async delete(id: number): Promise<Vehicle> {
-    const deletedVehicles = await db
-      .delete(vehicles)
-      .where(eq(vehicles.id, id))
-      .returning();
+    const deletedVehicles = await db.delete(vehicles).where(eq(vehicles.id, id)).returning();
 
-    if (!deletedVehicles.length)
-      throw new NotFoundException('Vehicle not found');
+    if (!deletedVehicles.length) throw new NotFoundException('Vehicle not found');
 
     return this.mapDbVehicle(deletedVehicles[0]);
   }
