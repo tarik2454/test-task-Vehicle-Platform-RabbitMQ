@@ -157,6 +157,9 @@ jobs:
             exit 1
           fi
 
+          # Serve the frontend directly on the standard HTTP port in production.
+          export FRONTEND_PORT=80
+
           on_error() {
             echo "Deploy failed. Current container state:"
             $COMPOSE_CMD ps || true
