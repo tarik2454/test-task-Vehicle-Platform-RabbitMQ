@@ -17,9 +17,10 @@ not document or introduce an unused variable as if it were active.
 
 ## Docker
 
-Docker Compose publishes the frontend on port `3000` and the backend APIs on
-ports `4001` and `4002`. The frontend container starts after both backend
-containers have started, but Compose does not currently wait for backend HTTP
-health checks.
+Docker Compose publishes the frontend on port `3000` by default and supports a
+`FRONTEND_PORT` override for production. The backend APIs remain on ports `4001`
+and `4002`; database and RabbitMQ host ports are bound to `127.0.0.1`. The
+frontend container starts after both backend containers have started, but
+Compose does not currently wait for backend HTTP health checks.
 
 Never commit `frontend/.env` or add real credentials to `.codex`.

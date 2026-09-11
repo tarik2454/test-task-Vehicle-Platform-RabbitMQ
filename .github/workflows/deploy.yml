@@ -157,6 +157,9 @@ jobs:
             exit 1
           fi
 
+          # Serve the frontend directly on the standard HTTP port in production.
+          export FRONTEND_PORT=80
+
           on_error() {
             echo "Deploy failed. Current container state:"
             $COMPOSE_CMD ps || true
@@ -240,6 +243,11 @@ jobs:
             sleep 5
           done
 
+          echo "Freeing port 80 for the frontend container..."
+          if systemctl list-unit-files nginx.service >/dev/null 2>&1; then
+            sudo systemctl disable --now nginx || true
+          fi
+
           echo "Starting application services..."
           $COMPOSE_CMD up -d --no-build user-service
           $COMPOSE_CMD up -d --no-build vehicle-service
@@ -260,6 +268,11 @@ jobs:
               exit 1
             fi
           done
+
+          echo "Validating application routes locally..."
+          curl --fail --silent --show-error --retry 12 --retry-delay 5 http://127.0.0.1/ >/dev/null
+          curl --fail --silent --show-error http://127.0.0.1:4001/users >/dev/null
+          curl --fail --silent --show-error http://127.0.0.1:4002/vehicles >/dev/null
 
           # Final cleanup
           sudo docker image prune -f >/dev/null 2>&1 || true
