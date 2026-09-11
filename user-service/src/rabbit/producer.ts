@@ -25,10 +25,7 @@ async function getChannel(): Promise<Channel> {
 }
 
 // Публикация события USER_CREATED
-export async function publishUserCreated(eventData: {
-  id: number;
-  email: string;
-}) {
+export async function publishUserCreated(eventData: { id: number; email: string }) {
   // Получаем канал (создаётся один раз)
   const ch = await getChannel();
 

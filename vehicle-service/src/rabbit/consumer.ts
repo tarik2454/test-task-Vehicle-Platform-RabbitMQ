@@ -88,9 +88,7 @@ export async function startConsumer() {
             .values({ make: 'Unknown', model: 'Unknown', year: null, userId })
             .returning();
 
-          console.log(
-            `🚗 Vehicle создан для user ${userId} (vehicle id: ${vehicle.id})`,
-          );
+          console.log(`🚗 Vehicle создан для user ${userId} (vehicle id: ${vehicle.id})`);
 
           // Подтверждаем успешную обработку сообщения
           ch.ack(msg);
