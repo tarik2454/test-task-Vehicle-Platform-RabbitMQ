@@ -9,9 +9,12 @@ Use this local skill before writing a pull request title or pull request body fo
 
 ## Base Branch
 
-- Open ordinary task PRs into `dev` by default.
-- Use `main` only when the user or team explicitly asks for a `main`-targeted PR.
-- In the GitHub compare UI, this should read `base: dev <- compare: REW-15` or your current task branch.
+- Open ordinary task PRs into `stage` by default.
+- Require a pull request for changes targeting either `stage` or `prod`; no approving review is required while the repository has a single maintainer.
+- Use `prod` only for a production release or when the user explicitly asks for a `prod`-targeted PR.
+- In the GitHub compare UI, an ordinary task PR should read `base: stage <- compare: REW-15` or your current task branch.
+- Promote tested changes from `stage` to `prod` through a dedicated release PR.
+- Treat direct pushes to `stage` or `prod` as an owner-only emergency bypass, not the normal workflow.
 
 ## Review State
 
