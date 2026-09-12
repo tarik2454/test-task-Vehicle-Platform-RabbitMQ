@@ -16,6 +16,8 @@ Use this local skill before writing a pull request title or pull request body fo
 - Promote tested changes from `stage` to `prod` through a dedicated release PR.
 - The repository owner may use the personal bypass to merge their own pull requests or push directly to `stage` or `prod`; treat direct pushes as an emergency exception, not the normal workflow.
 - Only the repository owner may update `prod`, whether by direct push or by merging a pull request.
+- Delete merged task branches automatically after their pull requests are merged into `stage`.
+- Never delete the long-lived `stage` branch after promoting it to `prod`; its active ruleset prevents automatic deletion.
 
 ## Review State
 
