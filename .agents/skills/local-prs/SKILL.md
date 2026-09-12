@@ -10,11 +10,12 @@ Use this local skill before writing a pull request title or pull request body fo
 ## Base Branch
 
 - Open ordinary task PRs into `stage` by default.
-- Require a pull request for changes targeting either `stage` or `prod`; no approving review is required while the repository has a single maintainer.
+- Require a pull request for changes targeting either `stage` or `prod`; pull requests from other contributors require the repository owner's approval.
 - Use `prod` only for a production release or when the user explicitly asks for a `prod`-targeted PR.
 - In the GitHub compare UI, an ordinary task PR should read `base: stage <- compare: REW-15` or your current task branch.
 - Promote tested changes from `stage` to `prod` through a dedicated release PR.
-- Treat direct pushes to `stage` or `prod` as an owner-only emergency bypass, not the normal workflow.
+- The repository owner may use the personal bypass to merge their own pull requests or push directly to `stage` or `prod`; treat direct pushes as an emergency exception, not the normal workflow.
+- Only the repository owner may update `prod`, whether by direct push or by merging a pull request.
 
 ## Review State
 
