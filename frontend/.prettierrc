@@ -11,6 +11,5 @@
   "plugins": ["prettier-plugin-css-order", "prettier-plugin-tailwindcss"],
   "cssDeclarationSorterOrder": "smacss",
   "cssDeclarationSorterKeepOverrides": false,
-
   "tailwindFunctions": ["clsx"]
 }
