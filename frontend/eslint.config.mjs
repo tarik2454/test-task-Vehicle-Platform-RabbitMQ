@@ -11,7 +11,7 @@ import unusedImports from 'eslint-plugin-unused-imports';
 
 const tsconfigRootDir = dirname(fileURLToPath(import.meta.url));
 
-const SOURCE_FILES = ['**/*.{js,jsx,ts,tsx}'];
+const SOURCE_FILES = ['**/*.{js,jsx,mjs,cjs,ts,tsx}'];
 const JAVASCRIPT_FILES = ['**/*.{js,jsx,mjs,cjs}'];
 const TYPESCRIPT_FILES = ['**/*.{ts,tsx}'];
 
@@ -35,23 +35,19 @@ const eslintConfig = defineConfig([
       'unused-imports': unusedImports,
     },
     rules: {
-      // Предупреждает о вызовах console, которые не должны попадать в production-код.
+      // Основные проверки безопасности и читаемости.
       'no-console': 'warn',
-      // Запрещает debugger, который останавливает выполнение кода.
       'no-debugger': 'error',
-      // Предупреждает о пустых блоках, но разрешает намеренно пустой catch.
       'no-empty': ['warn', { allowEmptyCatch: true }],
-      // Требует использовать const, если переменная не переназначается.
       'prefer-const': 'warn',
-      // Предупреждает об одиночном вложенном if, который можно объединить с родительским.
+
+      // Обязательная структура условных блоков.
       'no-lonely-if': 'warn',
-      // Предупреждает о лишнем else после ветки, которая уже завершилась через return.
       'no-else-return': 'warn',
-      // Отключает базовую проверку: неиспользуемые значения проверяет плагин ниже.
+
+      // Неиспользуемые импорты и переменные проверяет один специализированный плагин.
       'no-unused-vars': 'off',
-      // Запрещает импорты, которые объявлены, но нигде не используются.
       'unused-imports/no-unused-imports': 'error',
-      // Предупреждает о неиспользуемых переменных и аргументах, кроме имён с подчёркиванием.
       'unused-imports/no-unused-vars': [
         'warn',
         {
@@ -61,33 +57,25 @@ const eslintConfig = defineConfig([
           argsIgnorePattern: '^_',
         },
       ],
-      // Разрешает вызывать React Hooks только в допустимых местах.
-      'react-hooks/rules-of-hooks': 'error',
-      // Предупреждает о неполном массиве зависимостей хука.
-      'react-hooks/exhaustive-deps': 'warn',
-      // Разрешает обновлять состояние внутри эффектов, когда это требуется проекту.
+
+      // Осознанные послабления к рекомендациям Next.js и TanStack Query.
       'react-hooks/set-state-in-effect': 'off',
-      // Разрешает библиотеки, совместимость которых анализатор React не может проверить.
       'react-hooks/incompatible-library': 'off',
-      // Требует стабильный key для элементов, отрисованных из списка.
-      'react/jsx-key': 'error',
-      // Рекомендует самозакрывающиеся JSX-теги без дочерних элементов.
-      'react/self-closing-comp': 'warn',
-      // Разрешает использовать апострофы и другие символы напрямую в JSX-тексте.
       'react/no-unescaped-entities': 'off',
-      // Не требует импорт React, когда JSX-преобразование выполняет его автоматически.
-      'react/react-in-jsx-scope': 'off',
-      // Предупреждает об отсутствии альтернативного текста у изображений и похожих элементов.
-      'jsx-a11y/alt-text': 'warn',
-      // Предупреждает, если тег ссылки используется без корректного поведения ссылки.
-      'jsx-a11y/anchor-is-valid': 'warn',
-      // Разрешает rest-деструктуризацию объектов, возвращаемых TanStack Query.
       '@tanstack/query/no-rest-destructuring': 'off',
-      // Поддерживает единый порядок, группировку и алфавитную сортировку импортов.
+
+      // Дополнительные проверки JSX.
+      'react/self-closing-comp': 'warn',
+      'react/jsx-curly-brace-presence': [
+        'error',
+        { props: 'never', children: 'ignore' },
+      ],
+      'jsx-a11y/anchor-is-valid': 'warn',
+
+      // Единый порядок, группировка и алфавитная сортировка импортов.
       'import/order': [
         'warn',
         {
-          // Задаёт порядок групп: от системных модулей до локальных значений и типов.
           groups: [
             'builtin',
             'external',
@@ -96,7 +84,6 @@ const eslintConfig = defineConfig([
             'type',
             'object',
           ],
-          // Задаёт фиксированные позиции для фреймворков, алиасов и файлов стилей.
           pathGroups: [
             {
               pattern: 'react',
@@ -124,11 +111,8 @@ const eslintConfig = defineConfig([
               position: 'after',
             },
           ],
-          // Оставляет системные импорты под управлением основного списка групп.
           pathGroupsExcludedImportTypes: ['builtin'],
-          // Требует пустую строку между группами импортов.
           'newlines-between': 'always',
-          // Сортирует импорты по алфавиту внутри каждой группы.
           alphabetize: {
             order: 'asc',
             caseInsensitive: true,
@@ -141,9 +125,8 @@ const eslintConfig = defineConfig([
     name: 'project/javascript-rules',
     files: JAVASCRIPT_FILES,
     rules: {
-      // Запрещает использовать JavaScript-объявления до их определения.
+      // JavaScript-версии правил корректности выражений и объявлений.
       'no-use-before-define': 'error',
-      // Предупреждает о выражениях, которые не дают никакого результата.
       'no-unused-expressions': 'warn',
     },
   },
@@ -152,32 +135,24 @@ const eslintConfig = defineConfig([
     files: TYPESCRIPT_FILES,
     languageOptions: {
       parserOptions: {
-        // Автоматически использует ближайший tsconfig для правил с информацией о типах.
         projectService: true,
-        // Ищет файлы tsconfig относительно этого файла конфигурации.
         tsconfigRootDir,
       },
     },
     rules: {
-      // Отключает базовые правила, которые не учитывают синтаксис TypeScript.
+      // TypeScript-версии заменяют базовые правила для тех же проверок.
       'no-use-before-define': 'off',
       'no-unused-expressions': 'off',
       'require-await': 'off',
-      // Передаёт проверку неиспользуемых TypeScript-значений плагину unused-imports.
       '@typescript-eslint/no-unused-vars': 'off',
-      // Запрещает использовать TypeScript-объявления до их определения.
       '@typescript-eslint/no-use-before-define': 'error',
-      // Предупреждает о TypeScript-выражениях, которые не дают никакого результата.
       '@typescript-eslint/no-unused-expressions': 'warn',
-      // Предупреждает, если async-функция не содержит await.
       '@typescript-eslint/require-await': 'warn',
-      // Предупреждает, когда явный any отключает проверку типов.
       '@typescript-eslint/no-explicit-any': 'warn',
-      // Предупреждает о пустых объектных типах, принимающих почти любое непустое значение.
       '@typescript-eslint/no-empty-object-type': 'warn',
-      // Требует type вместо interface при описании объектных типов.
+
+      // Единый стиль типов: type, префикс T для типов и E для enum.
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-      // Требует проектные префиксы для псевдонимов типов и перечислений.
       '@typescript-eslint/naming-convention': [
         'warn',
         {
