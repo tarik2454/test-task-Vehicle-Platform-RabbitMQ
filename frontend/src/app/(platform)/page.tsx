@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import { Container } from '@/src/components/common/container';
-import { PageWrapper } from '@/src/components/common/page-wrapper';
+import { Container } from '@/src/components/common/Container';
+import { PageWrapper } from '@/src/components/common/PageWrapper';
 
 import styles from './page.module.scss';
 

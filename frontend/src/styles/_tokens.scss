@@ -1,0 +1,35 @@
+:root {
+  /* Radius */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Layer order */
+  --z-local-base: 0;
+  --z-local-raised: 1;
+  --z-local-overlay: 2;
+  --z-dropdown: 20;
+  --z-widget: 40;
+  --z-navigation: 50;
+  --z-modal: 60;
+  --z-modal-popover: 70;
+  --z-modal-nested: 80;
+  --z-system-overlay: 90;
+  --z-toast: 100;
+
+  /* Motion */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-default: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}

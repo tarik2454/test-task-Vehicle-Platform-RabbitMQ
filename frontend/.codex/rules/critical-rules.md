@@ -20,7 +20,7 @@
 ## Styling And Formatting
 
 - Keep SCSS modules colocated with their route or component.
-- Keep global styles in `src/styles/globals.css`.
+- Keep global styles in `src/styles/globals.scss`.
 - Keep both `prettier-plugin-css-order` and `prettier-plugin-tailwindcss`
   loadable when changing Prettier configuration.
 - Avoid broad formatting changes during focused work.

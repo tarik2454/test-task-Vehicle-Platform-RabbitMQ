@@ -1,12 +1,11 @@
+@use '../styles/typography' as t;
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  font-family:
-    system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji';
   text-align: center;
 }
 
@@ -19,15 +18,10 @@
   display: inline-block;
   margin: 0 20px 0 0;
   padding: 0 23px 0 0;
-  border-right: 1px solid rgba(0, 0, 0, 0.3);
-  font-weight: 500;
-  font-size: 24px;
-  line-height: 49px;
+  border-right: 1px solid var(--br-strong);
   vertical-align: top;
 
-  @media (prefers-color-scheme: dark) {
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
-  }
+  @include t.title-2;
 }
 
 .message {
@@ -36,14 +30,13 @@
 
 .messageText {
   margin: 0;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 49px;
+
+  @include t.paragraph;
 }
 
 .link {
   margin-top: 20px;
-  color: #0070f3;
+  color: var(--text-link);
   text-decoration: underline;
 
   &:hover {

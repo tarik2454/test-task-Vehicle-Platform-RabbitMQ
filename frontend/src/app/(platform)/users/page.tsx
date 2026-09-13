@@ -2,8 +2,8 @@
 
 import { useEffect, useState, type SubmitEvent } from 'react';
 
-import { Container } from '@/src/components/common/container';
-import { PageWrapper } from '@/src/components/common/page-wrapper';
+import { Container } from '@/src/components/common/Container';
+import { PageWrapper } from '@/src/components/common/PageWrapper';
 import { createUser, deleteUser, getUsers } from '@/src/server/users';
 import type { TUser } from '@/src/types';
 

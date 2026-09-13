@@ -1,0 +1,230 @@
+:root {
+  /* Base palette */
+  --black-100: #000000;
+  --black-50: rgba(0, 0, 0, 0.75);
+  --black-25: rgba(0, 0, 0, 0.45);
+  --black-15: rgba(0, 0, 0, 0.3);
+  --white-100: #ffffff;
+  --white-50: rgba(255, 255, 255, 0.65);
+  --white-25: rgba(255, 255, 255, 0.35);
+
+  /* Neutral palette */
+  --gray-0: #f7f7f7;
+  --gray-10: #f2f2f2;
+  --gray-20: #ebebeb;
+  --gray-30: #e0e0e0;
+  --gray-40: #dddddd;
+  --gray-50: #a9a9a9;
+  --gray-60: #858585;
+  --gray-60-20: rgba(133, 133, 133, 0.2);
+  --gray-70: #515151;
+  --gray-80: #343434;
+  --gray-90: #1e1e1e;
+  --gray-100: #0d0d0d;
+
+  /* Brand and feedback palette */
+  --yellow-50: #ffe20c;
+  --yellow-50-50: rgba(255, 226, 12, 0.5);
+  --blue-50: #0e56ff;
+  --blue-50-50: rgba(14, 86, 255, 0.5);
+  --red-50: #f13838;
+  --red-50-50: rgba(241, 56, 56, 0.5);
+  --red-50-90: rgba(241, 56, 56, 0.9);
+  --green-40: #2bbd23;
+  --green-50: #1ba12f;
+}
+
+:root:not([data-theme]),
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* Backgrounds */
+  --bg-primary: var(--white-100);
+  --bg-modal: var(--white-100);
+  --bg-secondary: var(--gray-10);
+  --bg-tertiary: var(--gray-30);
+  --bg-surface: var(--gray-20);
+  --bg-on-surface: var(--white-100);
+  --bg-inset: var(--white-100);
+  --bg-accent: var(--yellow-50);
+  --bg-contrast: var(--black-100);
+  --bg-overlay: var(--black-15);
+  --bg-card: color-mix(in srgb, var(--white-100) 94%, transparent);
+
+  /* Page backgrounds */
+  --bg-page-platform:
+    radial-gradient(
+      circle at top,
+      color-mix(in srgb, var(--blue-50) 14%, transparent),
+      transparent 32%
+    ),
+    linear-gradient(180deg, var(--gray-0) 0%, var(--gray-20) 100%);
+  --bg-page-users: linear-gradient(
+    180deg,
+    var(--gray-0) 0%,
+    var(--gray-10) 100%
+  );
+  --bg-page-vehicles:
+    radial-gradient(
+      circle at top right,
+      color-mix(in srgb, var(--green-40) 10%, transparent),
+      transparent 28%
+    ),
+    linear-gradient(180deg, var(--gray-0) 0%, var(--bg-surface) 100%);
+
+  /* Borders and shadows */
+  --br-default: var(--gray-60-20);
+  --br-strong: var(--black-25);
+  --br-negative: var(--red-50-50);
+  --br-textfield: var(--gray-40);
+  --shadow-card: 0 16px 38px
+    color-mix(in srgb, var(--black-100) 8%, transparent);
+  --shadow-card-hover: 0 20px 38px
+    color-mix(in srgb, var(--blue-50) 12%, transparent);
+
+  /* Text */
+  --text-primary: var(--black-100);
+  --text-primary-on-color: var(--black-100);
+  --text-secondary: var(--black-50);
+  --text-tertiary: var(--black-25);
+  --text-contrast: var(--white-100);
+  --text-accent: var(--yellow-50);
+  --text-link: var(--blue-50);
+  --text-negative: var(--red-50);
+  --text-warning: #7a6200;
+
+  /* Graphics */
+  --graphics-primary: var(--black-100);
+  --graphics-secondary: var(--black-50);
+  --graphics-tertiary: var(--black-25);
+  --graphics-contrast: var(--white-100);
+  --graphics-accent: var(--yellow-50);
+  --graphics-link: var(--blue-50);
+  --graphics-negative: var(--red-50);
+  --graphics-positive: var(--green-40);
+
+  /* Controls */
+  --ctrl-accent-default: var(--yellow-50);
+  --ctrl-accent-active: rgba(255, 226, 12, 0.6);
+  --ctrl-accent-disabled: rgba(255, 226, 12, 0.35);
+  --ctrl-negative-default: var(--red-50);
+  --ctrl-on-negative: var(--white-100);
+  --ctrl-primary-default: var(--black-100);
+  --ctrl-primary-active: rgba(0, 0, 0, 0.6);
+  --ctrl-primary-disabled: rgba(0, 0, 0, 0.25);
+  --ctrl-secondary-default: var(--gray-10);
+  --ctrl-secondary-active: var(--gray-20);
+  --ctrl-secondary-disabled: var(--gray-30);
+  --ctrl-on-primary: var(--yellow-50);
+
+  /* Vehicle Platform domains */
+  --user-accent: var(--blue-50);
+  --vehicle-accent: var(--green-40);
+
+  /* Data tables */
+  --table-bg: var(--gray-90);
+  --table-header-bg: var(--gray-80);
+  --table-row-hover: var(--gray-70);
+  --table-text: var(--gray-10);
+  --table-text-secondary: var(--gray-50);
+  --table-border: color-mix(in srgb, var(--white-100) 8%, transparent);
+  --table-page-active-bg: var(--yellow-50);
+  --table-page-active-text: var(--gray-100);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --bg-primary: var(--gray-100);
+  --bg-modal: var(--gray-90);
+  --bg-secondary: var(--gray-90);
+  --bg-tertiary: var(--gray-80);
+  --bg-surface: var(--gray-90);
+  --bg-on-surface: var(--gray-80);
+  --bg-inset: var(--gray-100);
+  --bg-accent: var(--yellow-50);
+  --bg-contrast: var(--white-100);
+  --bg-overlay: var(--black-15);
+  --bg-card: color-mix(in srgb, var(--gray-80) 94%, transparent);
+
+  /* Page backgrounds */
+  --bg-page-platform:
+    radial-gradient(
+      circle at top,
+      color-mix(in srgb, var(--blue-50) 16%, transparent),
+      transparent 32%
+    ),
+    linear-gradient(180deg, var(--gray-100) 0%, var(--gray-90) 100%);
+  --bg-page-users: linear-gradient(
+    180deg,
+    var(--gray-100) 0%,
+    var(--gray-90) 100%
+  );
+  --bg-page-vehicles:
+    radial-gradient(
+      circle at top right,
+      color-mix(in srgb, var(--green-40) 12%, transparent),
+      transparent 28%
+    ),
+    linear-gradient(180deg, var(--gray-100) 0%, var(--gray-90) 100%);
+
+  /* Borders and shadows */
+  --br-default: var(--gray-60-20);
+  --br-strong: var(--white-25);
+  --br-negative: var(--red-50-50);
+  --br-textfield: var(--gray-70);
+  --shadow-card: 0 16px 38px
+    color-mix(in srgb, var(--black-100) 30%, transparent);
+  --shadow-card-hover: 0 20px 38px
+    color-mix(in srgb, var(--blue-50) 18%, transparent);
+
+  /* Text */
+  --text-primary: var(--white-100);
+  --text-primary-on-color: var(--black-100);
+  --text-secondary: var(--white-50);
+  --text-tertiary: var(--white-25);
+  --text-contrast: var(--black-100);
+  --text-accent: var(--blue-50);
+  --text-link: var(--yellow-50);
+  --text-negative: var(--red-50);
+  --text-warning: var(--yellow-50);
+
+  /* Graphics */
+  --graphics-primary: var(--white-100);
+  --graphics-secondary: var(--white-50);
+  --graphics-tertiary: var(--white-25);
+  --graphics-contrast: var(--black-100);
+  --graphics-accent: var(--blue-50);
+  --graphics-link: var(--yellow-50);
+  --graphics-negative: var(--red-50);
+  --graphics-positive: var(--green-40);
+
+  /* Controls */
+  --ctrl-accent-default: var(--yellow-50);
+  --ctrl-accent-active: rgba(255, 226, 12, 0.6);
+  --ctrl-accent-disabled: rgba(255, 226, 12, 0.35);
+  --ctrl-negative-default: var(--red-50);
+  --ctrl-on-negative: var(--white-100);
+  --ctrl-primary-default: var(--white-100);
+  --ctrl-primary-active: rgba(255, 255, 255, 0.7);
+  --ctrl-primary-disabled: rgba(255, 255, 255, 0.3);
+  --ctrl-secondary-default: var(--gray-90);
+  --ctrl-secondary-active: var(--gray-80);
+  --ctrl-secondary-disabled: rgba(30, 30, 30, 0.6);
+  --ctrl-on-primary: var(--blue-50);
+
+  /* Vehicle Platform domains */
+  --user-accent: var(--blue-50);
+  --vehicle-accent: var(--green-40);
+
+  /* Data tables */
+  --table-bg: var(--gray-90);
+  --table-header-bg: var(--gray-80);
+  --table-row-hover: var(--gray-70);
+  --table-text: var(--gray-10);
+  --table-text-secondary: var(--gray-50);
+  --table-border: color-mix(in srgb, var(--white-100) 8%, transparent);
+  --table-page-active-bg: var(--yellow-50);
+  --table-page-active-text: var(--gray-100);
+}

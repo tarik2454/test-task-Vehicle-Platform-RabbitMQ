@@ -30,7 +30,8 @@
 - `src/components/common/` - shared container and page wrapper.
 - `src/components/ui/` - reusable table and pagination UI.
 - `src/server/` - HTTP request layer for backend services.
-- `src/styles/` - global styles.
+- `src/styles/` - global SCSS entrypoint, theme tokens, breakpoints, typography,
+  and reusable mixins.
 - `src/types/` - shared frontend data types.
 - `public/` - static assets.
 
