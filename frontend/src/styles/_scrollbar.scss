@@ -1,0 +1,19 @@
+@mixin thin {
+  scrollbar-color: var(--graphics-tertiary) transparent;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: var(--radius-pill);
+    background: var(--graphics-tertiary);
+    background-clip: content-box;
+  }
+}

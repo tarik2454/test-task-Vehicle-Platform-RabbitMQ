@@ -11,18 +11,22 @@ import unusedImports from 'eslint-plugin-unused-imports';
 
 const tsconfigRootDir = dirname(fileURLToPath(import.meta.url));
 
-const SOURCE_FILES = ['**/*.{js,jsx,ts,tsx}'];
+const SOURCE_FILES = ['**/*.{js,jsx,mjs,cjs,ts,tsx}'];
 const JAVASCRIPT_FILES = ['**/*.{js,jsx,mjs,cjs}'];
 const TYPESCRIPT_FILES = ['**/*.{ts,tsx}'];
 
 const eslintConfig = defineConfig([
   {
+    // Включает рекомендованные ESLint правила корректности JavaScript.
     ...js.configs.recommended,
     name: 'project/javascript-recommended',
     files: JAVASCRIPT_FILES,
   },
+  // Включает правила Next.js для производительности, React и React Hooks.
   ...nextCoreWebVitals,
+  // Включает правила Next.js, рекомендованные для TypeScript-проектов.
   ...nextTypescript,
+  // Включает рекомендованные правила корректности TanStack Query.
   ...tanstackQuery.configs['flat/recommended'],
   {
     name: 'project/source-rules',
@@ -31,12 +35,17 @@ const eslintConfig = defineConfig([
       'unused-imports': unusedImports,
     },
     rules: {
+      // Основные проверки безопасности и читаемости.
       'no-console': 'warn',
       'no-debugger': 'error',
       'no-empty': ['warn', { allowEmptyCatch: true }],
       'prefer-const': 'warn',
+
+      // Обязательная структура условных блоков.
       'no-lonely-if': 'warn',
       'no-else-return': 'warn',
+
+      // Неиспользуемые импорты и переменные проверяет один специализированный плагин.
       'no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
@@ -48,17 +57,22 @@ const eslintConfig = defineConfig([
           argsIgnorePattern: '^_',
         },
       ],
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+
+      // Осознанные послабления к рекомендациям Next.js и TanStack Query.
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/incompatible-library': 'off',
-      'react/jsx-key': 'error',
-      'react/self-closing-comp': 'warn',
       'react/no-unescaped-entities': 'off',
-      'react/react-in-jsx-scope': 'off',
-      'jsx-a11y/alt-text': 'warn',
-      'jsx-a11y/anchor-is-valid': 'warn',
       '@tanstack/query/no-rest-destructuring': 'off',
+
+      // Дополнительные проверки JSX.
+      'react/self-closing-comp': 'warn',
+      'react/jsx-curly-brace-presence': [
+        'error',
+        { props: 'never', children: 'ignore' },
+      ],
+      'jsx-a11y/anchor-is-valid': 'warn',
+
+      // Единый порядок, группировка и алфавитная сортировка импортов.
       'import/order': [
         'warn',
         {
@@ -111,6 +125,7 @@ const eslintConfig = defineConfig([
     name: 'project/javascript-rules',
     files: JAVASCRIPT_FILES,
     rules: {
+      // JavaScript-версии правил корректности выражений и объявлений.
       'no-use-before-define': 'error',
       'no-unused-expressions': 'warn',
     },
@@ -125,6 +140,7 @@ const eslintConfig = defineConfig([
       },
     },
     rules: {
+      // TypeScript-версии заменяют базовые правила для тех же проверок.
       'no-use-before-define': 'off',
       'no-unused-expressions': 'off',
       'require-await': 'off',
@@ -134,6 +150,8 @@ const eslintConfig = defineConfig([
       '@typescript-eslint/require-await': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
+
+      // Единый стиль типов: type, префикс T для типов и E для enum.
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/naming-convention': [
         'warn',
@@ -150,7 +168,9 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  // Отключает правила ESLint, конфликтующие с отдельным форматированием Prettier.
   prettierConfig,
+  // Исключает из линтинга сгенерированные файлы, coverage и тестовые инструменты.
   globalIgnores([
     '.next/**',
     'out/**',

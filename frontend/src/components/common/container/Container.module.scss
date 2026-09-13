@@ -2,5 +2,5 @@
   display: grid;
   width: min(1040px, 100%);
   margin: 0 auto;
-  gap: 24px;
+  gap: var(--space-5);
 }

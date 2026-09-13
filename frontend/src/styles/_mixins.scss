@@ -1,0 +1,68 @@
+@mixin surface-card {
+  border: 1px solid var(--br-default);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+}
+
+@mixin form-control {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--br-textfield);
+  border-radius: var(--radius-sm);
+  background: var(--bg-on-surface);
+  color: var(--text-primary);
+  transition:
+    border-color var(--transition-default),
+    box-shadow var(--transition-default);
+}
+
+@mixin focus-ring($color) {
+  border-color: $color;
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in srgb, $color 12%, transparent);
+}
+
+@mixin button-base {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform var(--transition-default),
+    opacity var(--transition-default),
+    background-color var(--transition-default);
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  white-space: nowrap;
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+}

@@ -1,0 +1,20 @@
+@use './reset';
+@use './tokens';
+@use './theme';
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  letter-spacing: -0.25px;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

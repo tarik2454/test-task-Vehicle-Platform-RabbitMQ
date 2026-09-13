@@ -1,16 +1,20 @@
+@use '../../../styles/breakpoints' as bp;
+@use '../../../styles/typography' as t;
+
 .pagination {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   flex-shrink: 0;
   align-items: center;
   padding: 14px 16px;
-  gap: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: var(--space-3);
+  border-top: 1px solid var(--table-border);
 }
 
 .footerStart {
-  color: #a1a1aa;
-  font-size: 13px;
+  color: var(--table-text-secondary);
+
+  @include t.caption-1(400);
 }
 
 .pager {
@@ -24,17 +28,16 @@
   height: 32px;
   padding: 0 10px;
   border: 0;
-  border-radius: 999px;
-  background: #27272a;
-  color: #f4f4f5;
-  font: inherit;
-  font-weight: 600;
-  font-size: 13px;
+  border-radius: var(--radius-pill);
+  background: var(--table-header-bg);
+  color: var(--table-text);
   cursor: pointer;
+
+  @include t.caption-1;
 }
 
 .pageButton:hover:not(:disabled) {
-  background: #3f3f46;
+  background: var(--table-row-hover);
 }
 
 .pageButton:disabled {
@@ -43,11 +46,11 @@
 }
 
 .pageButtonActive {
-  background: #facc15;
-  color: #09090b;
+  background: var(--table-page-active-bg);
+  color: var(--table-page-active-text);
 }
 
-@media (max-width: 720px) {
+@include bp.tablet {
   .pagination {
     grid-template-columns: 1fr;
     justify-items: start;
