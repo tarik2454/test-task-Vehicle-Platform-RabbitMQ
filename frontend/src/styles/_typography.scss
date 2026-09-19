@@ -1,88 +1,88 @@
-@mixin display-1 {
+@mixin display-large {
   font-weight: 500;
   font-size: 30px;
   line-height: 32px;
   letter-spacing: 0;
 }
 
-@mixin title-1 {
+@mixin heading-large {
   font-weight: 600;
   font-size: 28px;
   line-height: 28px;
   letter-spacing: -0.55px;
 }
 
-@mixin title-2 {
+@mixin heading-medium {
   font-weight: 600;
   font-size: 22px;
   line-height: 28px;
   letter-spacing: -0.5px;
 }
 
-@mixin title-3 {
+@mixin heading-small {
   font-weight: 500;
   font-size: 16px;
   line-height: 22px;
   letter-spacing: -0.25px;
 }
 
-@mixin subtitle-1($weight: 600) {
+@mixin label-large($weight: 600) {
   font-weight: $weight;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: -0.25px;
 }
 
-@mixin stat-value {
+@mixin metric-value {
   font-weight: 500;
   font-size: 18px;
   line-height: 24px;
   letter-spacing: 0;
 }
 
-@mixin subtitle-2 {
+@mixin label-medium {
   font-weight: 500;
   font-size: 14px;
   line-height: 16px;
   letter-spacing: -0.25px;
 }
 
-@mixin paragraph-1 {
+@mixin body-strong {
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: -0.25px;
 }
 
-@mixin paragraph {
+@mixin body {
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: -0.25px;
 }
 
-@mixin button-1 {
+@mixin button-large {
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: -0.25px;
 }
 
-@mixin button-2 {
+@mixin button-small {
   font-weight: 500;
   font-size: 12px;
   line-height: 16px;
   letter-spacing: -0.15px;
 }
 
-@mixin caption-1($weight: 600) {
+@mixin caption($weight: 600) {
   font-weight: $weight;
   font-size: 12px;
   line-height: 16px;
   letter-spacing: -0.25px;
 }
 
-@mixin caption-2 {
+@mixin caption-compact {
   font-weight: 400;
   font-size: 12px;
   line-height: 12px;

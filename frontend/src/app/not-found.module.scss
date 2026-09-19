@@ -18,10 +18,10 @@
   display: inline-block;
   margin: 0 20px 0 0;
   padding: 0 23px 0 0;
-  border-right: 1px solid var(--br-strong);
+  border-right: 1px solid var(--color-control-border-secondary);
   vertical-align: top;
 
-  @include t.title-2;
+  @include t.heading-medium;
 }
 
 .message {
@@ -31,12 +31,12 @@
 .messageText {
   margin: 0;
 
-  @include t.paragraph;
+  @include t.body;
 }
 
 .link {
   margin-top: 20px;
-  color: var(--text-link);
+  color: var(--color-text-link);
   text-decoration: underline;
 
   &:hover {

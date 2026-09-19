@@ -113,14 +113,14 @@ export default function VehiclesPage() {
   }
 
   return (
-    <PageWrapper className={styles.pageWrapper}>
+    <PageWrapper>
       <Container>
         <div className={styles.container}>
           <header className={styles.header}>
             <h1 className={styles.title}>Машины</h1>
             <p className={styles.subtitle}>
-              Страница оформлена через SCSS-модуль и использует минимальную
-              форму, чтобы добавить транспорт и увидеть связь с пользователем.
+              Добавляйте транспорт, связывайте его с пользователями и держите
+              данные в одном списке.
             </p>
           </header>
 

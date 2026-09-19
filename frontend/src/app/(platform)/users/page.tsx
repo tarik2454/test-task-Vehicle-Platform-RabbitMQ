@@ -87,13 +87,13 @@ export default function UsersPage() {
   }
 
   return (
-    <PageWrapper className={styles.pageWrapper}>
+    <PageWrapper>
       <Container>
         <header className={styles.header}>
           <h1 className={styles.title}>Пользователи</h1>
           <p className={styles.subtitle}>
-            Минимальная страница со SCSS-модулем: можно создать пользователя,
-            просмотреть список и удалить лишнюю запись.
+            Создавайте профили, просматривайте актуальные данные и управляйте
+            доступными записями.
           </p>
         </header>
         <section className={styles.card}>
@@ -194,7 +194,7 @@ export default function UsersPage() {
               </table>
             </div>
           ) : null}
-        </section>{' '}
+        </section>
       </Container>
     </PageWrapper>
   );
