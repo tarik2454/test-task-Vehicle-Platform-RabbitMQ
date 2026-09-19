@@ -1,8 +1,9 @@
 import Link from 'next/link';
 
+import { Container } from '@/src/components/common/Container';
 import { ThemeToggle } from '@/src/components/common/ThemeToggle';
 
-import styles from './layout.module.scss';
+import styles from './Header.module.scss';
 
 const navigation = [
   { href: '/', label: 'Главная' },
@@ -10,12 +11,10 @@ const navigation = [
   { href: '/vehicles', label: 'Машины' },
 ] as const;
 
-export default function PlatformLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export function Header() {
   return (
-    <>
-      <header className={styles.header}>
+    <header className={styles.header}>
+      <Container>
         <div className={styles.headerInner}>
           <Link href="/" className={styles.brand}>
             <span className={styles.brandMark}>V</span>
@@ -36,8 +35,7 @@ export default function PlatformLayout({
             <ThemeToggle />
           </div>
         </div>
-      </header>
-      {children}
-    </>
+      </Container>
+    </header>
   );
 }

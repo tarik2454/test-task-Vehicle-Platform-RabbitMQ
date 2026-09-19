@@ -26,7 +26,7 @@ const sections = [
 
 export default function Home() {
   return (
-    <PageWrapper className={styles.page}>
+    <PageWrapper>
       <Container>
         <section className={styles.section} aria-labelledby="platform-heading">
           <div className={styles.sectionHeader}>

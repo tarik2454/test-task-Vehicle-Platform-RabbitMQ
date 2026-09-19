@@ -1,5 +1,5 @@
-@use '../../styles/breakpoints' as bp;
-@use '../../styles/typography' as t;
+@use '../../../styles/breakpoints' as bp;
+@use '../../../styles/typography' as t;
 
 .header {
   z-index: var(--z-navigation);
@@ -14,10 +14,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100% - 32px);
+  width: 100%;
   min-height: 72px;
-  margin: 0 auto;
-  padding-block: 12px;
   gap: 12px;
 }
 
@@ -28,7 +26,6 @@
   gap: 10px;
   color: var(--color-text-primary);
   white-space: nowrap;
-
   @include t.label-large;
 }
 
@@ -71,7 +68,6 @@
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast);
-
   @include t.label-large(500);
 }
 
@@ -84,7 +80,6 @@
 
 @include bp.sm {
   .headerInner {
-    width: min(1200px, calc(100% - 48px));
     gap: 24px;
   }
 

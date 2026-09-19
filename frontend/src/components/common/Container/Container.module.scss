@@ -1,6 +1,24 @@
+@use '../../../styles/breakpoints' as bp;
+
 .container {
-  display: grid;
-  width: min(1200px, 100%);
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 480px;
   margin: 0 auto;
-  gap: 32px;
+  padding-inline: 20px;
+}
+
+@include bp.md {
+  .container {
+    max-width: 768px;
+    padding-inline: 40px;
+  }
+}
+
+@include bp.xxl {
+  .container {
+    max-width: 1440px;
+    padding-inline: 120px;
+  }
 }
