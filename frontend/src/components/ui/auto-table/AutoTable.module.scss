@@ -7,10 +7,10 @@
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
-  border: 1px solid var(--table-header-bg);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-md);
-  background: var(--table-bg);
-  color: var(--table-text);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
 }
 
 .autoTableScroll {
@@ -36,23 +36,23 @@
 
 .autoTableHeaderCell {
   padding: 10px 20px;
-  background: var(--table-header-bg);
-  color: var(--table-text-secondary);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
   letter-spacing: 0.02em;
   text-align: left;
   text-transform: uppercase;
   white-space: nowrap;
 
-  @include t.caption-1(700);
+  @include t.caption;
 }
 
 .autoTableCell {
   padding: 12px 20px;
-  border-top: 1px solid var(--table-border);
-  color: var(--table-text);
+  border-top: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
   vertical-align: middle;
 
-  @include t.paragraph-1;
+  @include t.body-strong;
 }
 
 .autoTableRow {
@@ -61,7 +61,7 @@
 }
 
 .autoTableRow:hover {
-  background: var(--table-row-hover);
+  background: var(--color-surface-subtle);
 }
 
 .autoTableRowClickable,
@@ -71,9 +71,9 @@
 
 .autoTableStateCell {
   padding: 32px 20px;
-  border-top: 1px solid var(--table-border);
-  color: var(--table-text-secondary);
+  border-top: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
   text-align: center;
 
-  @include t.paragraph;
+  @include t.body;
 }

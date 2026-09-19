@@ -1,57 +1,36 @@
-@mixin surface-card {
-  border: 1px solid var(--br-default);
+@mixin card-surface {
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-lg);
-  background: var(--bg-card);
-  box-shadow: var(--shadow-card);
+  background: var(--color-surface-raised);
 }
 
 @mixin form-control {
   width: 100%;
   min-height: 46px;
   padding: 0 14px;
-  border: 1px solid var(--br-textfield);
+  border: 1px solid var(--color-border-field);
   border-radius: var(--radius-sm);
-  background: var(--bg-on-surface);
-  color: var(--text-primary);
-  transition:
-    border-color var(--transition-default),
-    box-shadow var(--transition-default);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-normal);
 }
 
-@mixin focus-ring($color) {
-  border-color: $color;
-  outline: none;
-  box-shadow: 0 0 0 4px color-mix(in srgb, $color 12%, transparent);
+@mixin focus-outline($color: var(--color-focus-ring)) {
+  outline: 2px solid $color;
+  outline-offset: 3px;
 }
 
 @mixin button-base {
   min-height: 44px;
   padding: 0 18px;
   border: 0;
-  border-radius: var(--radius-pill);
-  font-weight: 600;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  transition:
-    transform var(--transition-default),
-    opacity var(--transition-default),
-    background-color var(--transition-default);
+  transition: background-color var(--transition-normal);
 
   &:disabled {
-    cursor: wait;
-    opacity: 0.7;
+    cursor: not-allowed;
   }
-}
-
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@mixin flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 @mixin visually-hidden {

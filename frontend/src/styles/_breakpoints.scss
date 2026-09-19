@@ -1,55 +1,56 @@
-@use './variables' as variables;
+@use 'sass:map';
 
-@mixin mobile {
-  @media (max-width: variables.$mobile) {
+$-breakpoints: (
+  xs: 480px,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1200px,
+  xxl: 1440px,
+);
+
+@function -value($name) {
+  $value: map.get($-breakpoints, $name);
+
+  @if $value == null {
+    @error 'Unknown breakpoint "#{$name}".';
+  }
+
+  @return $value;
+}
+
+@mixin max-xs {
+  @media (max-width: -value(xs)) {
     @content;
   }
 }
 
-@mixin wide-mobile {
-  @media (max-width: variables.$wide-mobile) {
+@mixin sm {
+  @media (min-width: -value(sm)) {
     @content;
   }
 }
 
-@mixin above-wide-mobile {
-  @media (min-width: variables.$above-wide-mobile) {
+@mixin md {
+  @media (min-width: -value(md)) {
     @content;
   }
 }
 
-@mixin tablet {
-  @media (max-width: variables.$tablet) {
+@mixin lg {
+  @media (min-width: -value(lg)) {
     @content;
   }
 }
 
-@mixin above-tablet {
-  @media (min-width: variables.$above-tablet) {
+@mixin xl {
+  @media (min-width: -value(xl)) {
     @content;
   }
 }
 
-@mixin compact-desktop {
-  @media (max-width: variables.$compact-desktop) {
-    @content;
-  }
-}
-
-@mixin below-desktop {
-  @media (max-width: variables.$below-desktop) {
-    @content;
-  }
-}
-
-@mixin desktop {
-  @media (min-width: variables.$desktop) {
-    @content;
-  }
-}
-
-@mixin narrow-desktop {
-  @media (min-width: variables.$above-tablet) and (max-width: variables.$below-desktop) {
+@mixin xxl {
+  @media (min-width: -value(xxl)) {
     @content;
   }
 }

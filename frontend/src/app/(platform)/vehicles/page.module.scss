@@ -2,65 +2,67 @@
 @use '../../../styles/mixins' as mixins;
 @use '../../../styles/typography' as t;
 
-.pageWrapper {
-  background: var(--bg-page-vehicles);
+.container {
+  display: grid;
+  gap: 32px;
 }
 
 .header {
   display: grid;
-  gap: 10px;
+  padding: 12px 0 24px;
+  gap: 12px;
 }
 
 .title {
   margin: 0;
-  color: var(--text-primary);
-  font-weight: 600;
-  font-size: clamp(1.9rem, 4vw, 2.8rem);
-  line-height: 1.1;
-  letter-spacing: -0.55px;
+  color: var(--color-text-primary);
+
+  @include t.heading-large;
 }
 
 .subtitle {
-  @include t.paragraph;
-
   max-width: 640px;
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .card {
-  @include mixins.surface-card;
+  display: grid;
+  padding: 24px;
+  gap: 16px;
 
-  padding: var(--space-5);
+  @include mixins.card-surface;
 }
 
 .sectionTitle {
-  @include t.title-3;
+  margin: 0;
+  color: var(--color-text-primary);
 
-  margin: 0 0 var(--space-4);
-  color: var(--text-primary);
+  @include t.heading-medium;
 }
 
 .form {
   display: grid;
-  gap: var(--space-4);
+  gap: 24px;
 }
 
 .fields {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: var(--space-4);
+  gap: 16px;
 }
 
 .field {
   display: grid;
-  gap: var(--space-2);
+  gap: 8px;
 }
 
 .label {
-  @include t.subtitle-1;
+  color: var(--color-text-secondary);
 
-  color: var(--text-secondary);
+  @include t.label-large;
 }
 
 .input,
@@ -70,91 +72,138 @@
 
 .input:focus,
 .select:focus {
-  @include mixins.focus-ring(var(--vehicle-accent));
+  border-color: var(--color-control-accent-default);
+}
+
+.input:focus-visible,
+.select:focus-visible {
+  @include mixins.focus-outline;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
+  width: 100%;
+  gap: 12px;
 }
 
 .button {
+  width: 100%;
+
   @include mixins.button-base;
-  @include t.subtitle-1;
+  @include t.label-large;
 }
 
 .buttonPrimary {
-  background: var(--vehicle-accent);
-  color: var(--white-100);
+  background: var(--color-control-accent-default);
+  color: var(--color-text-on-accent);
+}
+
+.buttonPrimary:hover:not(:disabled) {
+  background: var(--color-control-accent-hover);
+}
+
+.buttonPrimary:disabled {
+  background: var(--color-control-accent-disabled);
 }
 
 .buttonDanger {
-  background: var(--ctrl-negative-default);
-  color: var(--ctrl-on-negative);
+  min-height: 36px;
+  padding-inline: 14px;
+  background: var(--color-control-danger-default);
+  color: var(--color-control-on-danger);
 }
 
 .status {
-  @include t.paragraph;
-
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
+
+  @include t.body;
 }
 
 .statusError {
-  color: var(--text-negative);
+  padding: 12px 16px;
+  border: 1px solid var(--color-border-danger);
+  border-radius: var(--radius-sm);
+  background: var(--color-status-danger-surface);
+  color: var(--color-text-danger);
 }
 
 .tableWrap {
-  overflow: hidden;
-  border: 1px solid var(--br-default);
+  overflow-x: auto;
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
 }
 
 .table {
   width: 100%;
+  min-width: 860px;
   border-collapse: collapse;
-  background: var(--bg-on-surface);
+  background: var(--color-surface-raised);
 }
 
 .table th,
 .table td {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--br-default);
+  padding: 12px;
+  border-bottom: 1px solid var(--color-border-default);
   text-align: left;
 }
 
-.table th {
-  @include t.caption-1;
+.table tr:last-child td {
+  border-bottom: 0;
+}
 
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
+.table th {
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+
+  @include t.caption;
 }
 
 .table td {
-  @include t.paragraph;
+  color: var(--color-text-primary);
 
-  color: var(--text-primary);
+  @include t.body;
+}
+
+.table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.table tbody tr:hover {
+  background: var(--color-surface-subtle);
 }
 
 .emptyState {
-  @include t.paragraph;
-
   margin: 0;
-  padding: var(--space-5);
-  color: var(--text-tertiary);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-tertiary);
   text-align: center;
+
+  @include t.body;
 }
 
-@include bp.wide-mobile {
+@include bp.sm {
+  .header {
+    padding-top: 24px;
+  }
+
   .card {
-    padding: 18px;
+    padding: 32px;
+  }
+
+  .actions,
+  .button {
+    width: auto;
   }
 
   .table th,
   .table td {
-    padding: 12px;
+    padding: 14px 16px;
   }
 }

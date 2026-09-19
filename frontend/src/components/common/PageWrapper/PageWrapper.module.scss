@@ -1,12 +1,12 @@
 @use '../../../styles/breakpoints' as bp;
 
 .pageWrapper {
-  min-height: 100vh;
-  padding: 40px 24px 64px;
+  min-height: calc(100vh - 72px);
+  padding: 32px 16px;
 }
 
-@include bp.wide-mobile {
+@include bp.sm {
   .pageWrapper {
-    padding-inline: var(--space-4);
+    padding: 80px 24px;
   }
 }

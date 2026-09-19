@@ -1,84 +1,170 @@
-@use '../../styles/mixins' as mixins;
+@use '../../styles/breakpoints' as bp;
 @use '../../styles/typography' as t;
 
-.pageWrapper {
-  background: var(--bg-page-platform);
+.page {
+  padding-block: 32px;
 }
 
-.hero {
-  padding: 32px;
-
-  @include mixins.surface-card;
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.eyebrow {
-  margin: 0 0 12px;
-  color: var(--user-accent);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-  @include t.caption-1(700);
+.headingRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .title {
   margin: 0;
-  color: var(--text-primary);
-  font-weight: 600;
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  line-height: 1.05;
-  letter-spacing: -0.55px;
+  color: var(--color-text-primary);
+
+  @include t.heading-medium;
+}
+
+.sectionCount {
+  color: var(--color-text-tertiary);
+
+  @include t.label-large;
 }
 
 .description {
-  max-width: 640px;
-  margin: 16px 0 0;
-  color: var(--text-secondary);
+  margin: 0;
+  color: var(--color-text-secondary);
 
-  @include t.paragraph;
+  @include t.body-strong;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }
 
 .card {
   display: grid;
-  padding: var(--space-5);
-  gap: var(--space-3);
-  color: inherit;
-  text-decoration: none;
-  transition:
-    transform var(--transition-default),
-    box-shadow var(--transition-default),
-    border-color var(--transition-default);
-
-  @include mixins.surface-card;
+  grid-template-columns: 1fr;
+  min-height: 240px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-default);
+  border-radius: 20px;
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast);
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  border-color: var(--user-accent);
-  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-control-border-secondary);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.cardVisual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  background: var(--color-surface-muted);
+}
+
+.cardNumber {
+  color: var(--color-text-tertiary);
+  font-weight: 600;
+  font-size: 72px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 220px;
+  padding: 20px;
+}
+
+.cardCategory {
+  margin: 0;
+  color: var(--color-text-tertiary);
+
+  @include t.caption;
+}
+
+.cardCopy {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  gap: 8px;
 }
 
 .cardTitle {
   margin: 0;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 
-  @include t.title-3;
+  @include t.heading-small;
 }
 
 .cardText {
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 
-  @include t.paragraph;
+  @include t.body;
 }
 
-.cardMeta {
-  color: var(--user-accent);
+.cardAction {
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+  justify-content: center;
+  min-height: 40px;
+  margin-top: auto;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  background: var(--color-control-accent-default);
+  color: var(--color-text-on-accent);
 
-  @include t.subtitle-1;
+  @include t.button-large;
+}
+
+@include bp.sm {
+  .page {
+    padding-block: 48px;
+  }
+
+  .section {
+    gap: 40px;
+  }
+
+  .card {
+    grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  }
+
+  .cardVisual {
+    min-height: 240px;
+  }
+
+  .cardContent {
+    min-height: auto;
+  }
+}
+
+@include bp.md {
+  .page {
+    padding-block: 80px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

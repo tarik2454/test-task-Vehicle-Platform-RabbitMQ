@@ -1,0 +1,64 @@
+@use '../styles/typography' as t;
+
+.page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: var(--color-surface-subtle);
+}
+
+.card {
+  width: min(560px, 100%);
+  padding: 32px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-modal);
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--color-text-danger);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  @include t.caption;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.message {
+  margin: 16px 0 0;
+  color: var(--color-text-secondary);
+
+  @include t.body;
+}
+
+.button {
+  min-height: 46px;
+  margin-top: 24px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-control-accent-default);
+  color: var(--color-text-on-accent);
+  cursor: pointer;
+
+  @include t.label-large;
+}
+
+.button:hover {
+  background: var(--color-control-accent-hover);
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
