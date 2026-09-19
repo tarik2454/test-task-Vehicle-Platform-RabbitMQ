@@ -3,22 +3,24 @@
 
 .pagination {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr;
   flex-shrink: 0;
   align-items: center;
+  justify-items: start;
   padding: 14px 16px;
-  gap: var(--space-3);
-  border-top: 1px solid var(--table-border);
+  gap: 12px;
+  border-top: 1px solid var(--color-border-default);
 }
 
 .footerStart {
-  color: var(--table-text-secondary);
+  color: var(--color-text-secondary);
 
-  @include t.caption-1(400);
+  @include t.caption(400);
 }
 
 .pager {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
 }
@@ -28,16 +30,16 @@
   height: 32px;
   padding: 0 10px;
   border: 0;
-  border-radius: var(--radius-pill);
-  background: var(--table-header-bg);
-  color: var(--table-text);
+  border-radius: var(--radius-full);
+  background: var(--color-control-secondary-default);
+  color: var(--color-text-primary);
   cursor: pointer;
 
-  @include t.caption-1;
+  @include t.caption;
 }
 
 .pageButton:hover:not(:disabled) {
-  background: var(--table-row-hover);
+  background: var(--color-control-secondary-hover);
 }
 
 .pageButton:disabled {
@@ -46,17 +48,17 @@
 }
 
 .pageButtonActive {
-  background: var(--table-page-active-bg);
-  color: var(--table-page-active-text);
+  background: var(--color-surface-accent);
+  color: var(--color-text-on-accent);
 }
 
-@include bp.tablet {
+@include bp.md {
   .pagination {
-    grid-template-columns: 1fr;
-    justify-items: start;
+    grid-template-columns: 1fr auto 1fr;
+    justify-items: normal;
   }
 
   .pager {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 }

@@ -1,5 +1,9 @@
 'use client';
 
+import { DEFAULT_THEME } from '@/src/constants/theme';
+
+import styles from './global-error.module.scss';
+
 export default function GlobalError({
   error,
   reset,
@@ -8,19 +12,14 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <html>
-      <body>
-        <div
-          style={{
-            display: 'grid',
-            placeItems: 'center',
-            minHeight: '100vh',
-            gap: 16,
-          }}
-        >
-          <h2>Something went wrong</h2>
-          <p style={{ opacity: 0.7 }}>{error.message}</p>
-          <button onClick={reset}>Try again</button>
+    <html lang="ru" data-theme={DEFAULT_THEME}>
+      <body className={styles.page}>
+        <div className={styles.content}>
+          <h2 className={styles.title}>Something went wrong</h2>
+          <p className={styles.message}>{error.message}</p>
+          <button type="button" onClick={reset} className={styles.button}>
+            Try again
+          </button>
         </div>
       </body>
     </html>

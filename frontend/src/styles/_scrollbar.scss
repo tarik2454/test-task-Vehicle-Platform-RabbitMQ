@@ -1,5 +1,5 @@
 @mixin thin {
-  scrollbar-color: var(--graphics-tertiary) transparent;
+  scrollbar-color: var(--color-graphic-tertiary) transparent;
   scrollbar-width: thin;
 
   &::-webkit-scrollbar {
@@ -12,8 +12,8 @@
 
   &::-webkit-scrollbar-thumb {
     border: 2px solid transparent;
-    border-radius: var(--radius-pill);
-    background: var(--graphics-tertiary);
+    border-radius: var(--radius-full);
+    background: var(--color-graphic-tertiary);
     background-clip: content-box;
   }
 }

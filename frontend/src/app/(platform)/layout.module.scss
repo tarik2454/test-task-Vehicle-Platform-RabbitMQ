@@ -1,0 +1,109 @@
+@use '../../styles/breakpoints' as bp;
+@use '../../styles/typography' as t;
+
+.header {
+  z-index: var(--z-navigation);
+  position: sticky;
+  top: 0;
+  min-height: 72px;
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(100% - 32px);
+  min-height: 72px;
+  margin: 0 auto;
+  padding-block: 12px;
+  gap: 12px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  gap: 10px;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+
+  @include t.label-large;
+}
+
+.brandMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-accent);
+  color: var(--color-text-on-accent);
+}
+
+.brand > span:last-child {
+  display: none;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  overflow-x: auto;
+  gap: 0;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  gap: 12px;
+}
+
+.navLink {
+  padding: 10px 8px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+
+  @include t.label-large(500);
+}
+
+.navLink:hover,
+.navLink:focus-visible {
+  outline: none;
+  background: var(--color-control-secondary-default);
+  color: var(--color-text-link);
+}
+
+@include bp.sm {
+  .headerInner {
+    width: min(1200px, calc(100% - 48px));
+    gap: 24px;
+  }
+
+  .brand {
+    min-height: auto;
+  }
+
+  .brand > span:last-child {
+    display: inline;
+  }
+
+  .navigation {
+    max-width: none;
+    overflow-x: visible;
+    gap: 8px;
+  }
+
+  .navLink {
+    padding-inline: 14px;
+    white-space: normal;
+  }
+}
