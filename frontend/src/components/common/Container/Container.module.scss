@@ -13,6 +13,13 @@
 @include bp.md {
   .container {
     max-width: 768px;
+    padding-inline: 30px;
+  }
+}
+
+@include bp.lg {
+  .container {
+    max-width: 1024px;
     padding-inline: 40px;
   }
 }
