@@ -2,11 +2,11 @@
 
 .pageWrapper {
   min-height: calc(100vh - 72px);
-  padding: 32px 0;
+  padding: 20px 0;
 }
 
-@include bp.sm {
+@include bp.md {
   .pageWrapper {
-    padding: 80px 0;
+    padding: 40px 0;
   }
 }
