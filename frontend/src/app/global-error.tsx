@@ -1,6 +1,6 @@
 'use client';
 
-import { DEFAULT_THEME } from '@/src/constants/theme';
+import { DEFAULT_THEME } from '@/src/constants';
 
 import styles from './global-error.module.scss';
 

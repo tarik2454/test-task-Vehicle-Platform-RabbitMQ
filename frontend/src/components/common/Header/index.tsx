@@ -2,13 +2,14 @@ import Link from 'next/link';
 
 import { Container } from '@/src/components/common/Container';
 import { ThemeToggle } from '@/src/components/common/ThemeToggle';
+import { ROUTES } from '@/src/constants';
 
 import styles from './Header.module.scss';
 
 const navigation = [
-  { href: '/', label: 'Главная' },
-  { href: '/users', label: 'Пользователи' },
-  { href: '/vehicles', label: 'Машины' },
+  { href: ROUTES.HOME, label: 'Главная' },
+  { href: ROUTES.USERS, label: 'Пользователи' },
+  { href: ROUTES.VEHICLES, label: 'Машины' },
 ] as const;
 
 export function Header() {
@@ -16,7 +17,7 @@ export function Header() {
     <header className={styles.header}>
       <Container>
         <div className={styles.headerInner}>
-          <Link href="/" className={styles.brand}>
+          <Link href={ROUTES.HOME} className={styles.brand}>
             <span className={styles.brandMark}>V</span>
             <span>Vehicle Platform</span>
           </Link>

@@ -7,7 +7,7 @@ import {
   THEME,
   THEME_QUERY_PARAM,
   THEME_STORAGE_KEY,
-} from '@/src/constants/theme';
+} from '@/src/constants';
 import { ThemeProvider } from '@/src/providers/ThemeProvider';
 
 import '../styles/globals.scss';

@@ -16,7 +16,7 @@ import {
   THEME,
   THEME_STORAGE_KEY,
   type TTheme,
-} from '@/src/constants/theme';
+} from '@/src/constants';
 
 type TThemeContext = {
   theme: TTheme;

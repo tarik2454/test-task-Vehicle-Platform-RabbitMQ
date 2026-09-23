@@ -1,6 +1,6 @@
 'use client';
 
-import { THEME } from '@/src/constants/theme';
+import { THEME } from '@/src/constants';
 import { useTheme } from '@/src/providers/ThemeProvider';
 
 import styles from './ThemeToggle.module.scss';

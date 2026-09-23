@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { ROUTES } from '@/src/constants';
+
 import styles from './not-found.module.scss';
 
 export default function NotFound() {
@@ -11,7 +13,7 @@ export default function NotFound() {
           <h2 className={styles.messageText}>This page could not be found.</h2>
         </div>
       </div>
-      <Link href="/" className={styles.link}>
+      <Link href={ROUTES.HOME} className={styles.link}>
         Go to home page
       </Link>
     </main>

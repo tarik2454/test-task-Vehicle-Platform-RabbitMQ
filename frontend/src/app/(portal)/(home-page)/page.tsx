@@ -2,12 +2,13 @@ import Link from 'next/link';
 
 import { Container } from '@/src/components/common/Container';
 import { PageWrapper } from '@/src/components/common/PageWrapper';
+import { ROUTES } from '@/src/constants';
 
 import styles from './page.module.scss';
 
 const sections = [
   {
-    href: '/users',
+    href: ROUTES.USERS,
     number: '01',
     category: 'Пользователи',
     title: 'Управление пользователями',
@@ -15,7 +16,7 @@ const sections = [
       'Создавайте профили, просматривайте актуальные данные и удаляйте ненужные записи.',
   },
   {
-    href: '/vehicles',
+    href: ROUTES.VEHICLES,
     number: '02',
     category: 'Транспорт',
     title: 'Управление машинами',
