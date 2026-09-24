@@ -4,7 +4,7 @@
 
 .header {
   display: grid;
-  padding: 12px 0 24px;
+  margin-bottom: 24px;
   gap: 12px;
 }
 
@@ -195,10 +195,6 @@
 }
 
 @include bp.sm {
-  .header {
-    padding-top: 24px;
-  }
-
   .card {
     padding: 32px;
   }
