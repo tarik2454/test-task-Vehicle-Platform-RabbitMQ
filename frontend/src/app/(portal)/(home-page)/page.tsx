@@ -35,7 +35,7 @@ export default function Home() {
               <h1 id="platform-heading" className={styles.title}>
                 Управление платформой
               </h1>
-              <span className={styles.sectionCount}>2</span>
+              <span className={styles.sectionCount}>{sections.length}</span>
             </div>
             <p className={styles.description}>
               Пользователи и связанные с ними машины в одном интерфейсе.

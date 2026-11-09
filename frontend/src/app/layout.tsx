@@ -3,6 +3,7 @@ import { type Metadata } from 'next';
 import { Instrument_Sans } from 'next/font/google';
 
 import {
+  APP_NAME,
   DEFAULT_THEME,
   THEME,
   THEME_QUERY_PARAM,
@@ -20,7 +21,7 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Vehicle Platform',
+  title: APP_NAME,
   description: 'Users and vehicles management UI',
 };
 

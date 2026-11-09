@@ -15,12 +15,14 @@ containing the backend response text when a response is not successful.
 - Base port: `4001`
 - Resource: `/users`
 - Operations: list, get by ID, create, update, and delete.
+- The delete operation returns the deleted user.
 
 ## Vehicle API
 
 - Base port: `4002`
 - Resource: `/vehicles`
 - Operations: list, get by ID, create, update, and delete.
+- The delete operation returns the deleted vehicle.
 
 ## Cross-Service Behavior
 

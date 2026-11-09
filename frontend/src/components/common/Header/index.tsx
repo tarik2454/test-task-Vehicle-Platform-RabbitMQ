@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import { Container } from '@/src/components/common/Container';
 import { ThemeToggle } from '@/src/components/common/ThemeToggle';
-import { ROUTES } from '@/src/constants';
+import { APP_NAME, ROUTES } from '@/src/constants';
 
 import styles from './Header.module.scss';
 
@@ -19,7 +19,7 @@ export function Header() {
         <div className={styles.headerInner}>
           <Link href={ROUTES.HOME} className={styles.brand}>
             <span className={styles.brandMark}>V</span>
-            <span>Vehicle Platform</span>
+            <span>{APP_NAME}</span>
           </Link>
           <div className={styles.headerControls}>
             <nav className={styles.navigation} aria-label="Основная навигация">

@@ -20,9 +20,18 @@ export type TCreateUserInput = {
   name?: string;
 };
 
+export type TUpdateUserInput = Partial<TCreateUserInput>;
+
 export type TCreateVehicleInput = {
   make?: string;
   model?: string;
   year?: number;
   userId: number;
+};
+
+export type TUpdateVehicleInput = {
+  make?: string;
+  model?: string;
+  year?: number | null;
+  userId?: number;
 };

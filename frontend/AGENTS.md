@@ -53,6 +53,17 @@ on instructions from its current parent repository.
 - Keep routes and layouts under `src/app/`.
 - Keep reusable UI under `src/components/`.
 - Keep service requests in `src/server/` and shared data shapes in `src/types/`.
+- Keep types used only by one component next to it in its `.tsx` file. Put shared
+  types in the nearest module that owns them.
+- Prefer keeping static constants next to the code that uses them. A constant
+  can stay in the same file when several components or functions in that file
+  use it. Group related configuration in a colocated file when it makes the code
+  easier to read.
+- Across files, share a constant when it represents the same rule and should
+  change together for all consumers. Use the nearest owning module and reserve
+  `src/constants/` for application-wide values such as routes and theme settings.
+- Keep API request and response types in `src/types/` even when only one
+  component uses them.
 - Do not scatter backend URLs, ports, or raw fetch logic through components.
 - Before changing a request or response shape, inspect the matching backend DTO,
   controller, service response, frontend type, request helper, and UI consumer.
